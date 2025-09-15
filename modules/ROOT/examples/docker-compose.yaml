@@ -1,0 +1,26 @@
+services:
+  master:
+    image: mysql:8.0
+    container_name: master
+    ports:
+      -  "33063:3306"
+    volumes:
+      -  ./master_data:/var/lib/mysql
+      -  ./config/master.cnf:/etc/mysql/conf.d/master.cnf
+      -  ./logmaster:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+
+  slave:
+    image: mysql:8.0
+    container_name: slave
+    ports:
+      -  "33064:3306"
+    volumes:
+      -  ./slave_data:/var/lib/mysql
+      -  ./config/slave.cnf:/etc/mysql/conf.d/slave.cnf
+      -  ./logslave:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 4321
+    depends_on:
+      -  master

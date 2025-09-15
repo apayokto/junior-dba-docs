@@ -1,0 +1,10 @@
+= Uvod u DBA & DevOps
+Dobrodošli!
+
+Ovo je moj osobni vodič kroz alate, procese i koncepte koje sam savladao kao Junior DBA.
+
+== Sadržaj
+
+* xref:roadmap.adoc[Learning roadmap]
+* xref:labs.adoc[Praktične vježbe]
+

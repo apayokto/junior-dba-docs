@@ -1,0 +1,5 @@
+name: junior-dba-docs
+version: '1.0'
+title: Junior DBA Dokumentacija
+nav:
+- modules/ROOT/nav.adoc

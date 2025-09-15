@@ -1,0 +1,151 @@
+= Learning roadmap
+
+
+*Praksa* i korištenje materijala su ključni za razumijevanje i savladavanje koncepata.Ova sekcija sadrži alate, koncepte i resurse koji su mi najviše pomogli u savladavanju osnova.
+
+Savjet: Nakon što se savladaju osnove kroz praktične vježbe, preporučuje se vratiti službenoj dokumentaciji. Sada će je biti lakše razumjeti i steći dublje znanje, povezujući teoriju s praksom.
+
+Imajte na umu: *Službena dokumentacija je najvažniji i najrelevantniji izvor informacija*. Ovaj vodič je osmišljen kao dopuna(sidecar conteiner) koja vam olakšava proces učenja. Kroz vanjske resurse, pomoći ćemo vam da razumijete ključne koncepte i pripremite se za dublje, tehničke detalje koji se nalaze u službenim priručnicima. Nakon što savladate osnove, službena dokumentacija će vam postati glavni alat.
+
+== Linux
+
+.Knjige
+* link:https://learning.oreilly.com/library/view/efficient-linux-at/9781098113391/preface01.html[Efficient Linux at the Command Line]
+
+.Video 
+* link:https://www.youtube.com/watch?v=VbEx7B_PTOE&list=PLIhvC56v63IJIujb5cyE13oLuyORZpdkL[Dinamičan pristup: Brzo savladavanje osnova kroz primjere uz pomoć Network Chucka]
+* link:https://www.youtube.com/@LearnLinuxTV[LearnLinuxTV YouTube kanal]
+
+.Igrica
+* link:https://overthewire.org/wargames/bandit/bandit0.html[Učenje kroz zabavu]
+
+.Alati
+* link:https://gnome-terminator.readthedocs.io/en/latest/[Terminator]
+
+* link:https://code.visualstudio.com/docs/setup/linux[VS Code]
+
+* link:https://ohmyz.sh/[ohmyzsh]
+
+* link:https://github.com/junegunn/fzf[fzf finder]
+
+== Docker
+
+.CheatSheet
+* link:https://it-cheat-sheets-21aa0a.gitlab.io/docker-cheat-sheet.html[Docker cheat sheet]
+
+.Video
+* link:https://www.youtube.com/watch?v=jPdIRX6q4jA&list=PLy7NrYWoggjzfAHlUusx2wuDwfCrmJYcs[Techworld with Nana]
+
+== MySQL
+
+.CheatSheet
+* link:https://it-cheat-sheets-21aa0a.gitlab.io/sql-cheat-sheet.html[SQL cheat sheet]
+
+.Video
+* link:https://www.youtube.com/@hercules7sakthi/videos[Praktični videi]
+
+.Web
+* link:https://mysql.rjweb.org/doc.php/ricksrots[Rules of Thumb]
+
+* link:https://www.w3schools.com/MySQL/default.asp[Vježbe]
+
+* link:https://use-the-index-luke.com/[Malo više o indexima]
+
+.Alati
+* link:https://www.liberoscarcelli.com/blog/benchmarking-mysql-databases-with-sysbench[Kako koristiti sysbench]
+
+* link:https://mydumper.github.io/mydumper/docs/html/index.html[My dumper/loader, za backup i restore]
+
+.ProxySQL
+* link:https://proxysql.com/documentation/[ProxySQL docs]
+
+.Knjige
+* link:https://learning.oreilly.com/library/view/high-performance-mysql/9781492080503/foreword01.html[High Performance Mysql, 4th Edition]
+
+== Galera
+
+.Docs
+* link:https://galeracluster.com/library/documentation/[Galera documentation]
+
+.Blog
+* link:https://galeracluster.com/category/blog/[Galera Blog]
+
+* link:https://severalnines.com/resources/whitepapers/galera-cluster-mysql-tutorial/[Galera Cluster white paper]
+
+== Percona 
+
+.Docs
+* link:https://docs.percona.com/percona-xtradb-cluster/8.4/[Percona XtraDB Cluster]
+
+.Alati
+* link:https://docs.percona.com/percona-xtrabackup/8.4/[Percona Xtrabackup]
+
+* link:https://docs.percona.com/percona-toolkit/[Percona tool kit]
+
+* link:https://docs.percona.com/pmm/[PMM monitoring]
+
+.Blog 
+
+* link:https://www.percona.com/blog/[Percona blog]
+
+
+== MariaDB
+
+.Docs
+* link:https://mariadb.com/docs[MariaDB docs]
+
+.MaxscaleProxy
+* link:https://mariadb.com/docs/maxscale[Maxscale]
+
+.Blog
+
+* link:https://mariadb.org/blog/[Blog]
+
+
+
+== MongoDB 
+
+.CheatSheet
+* link:https://www.mongodb.com/developer/products/mongodb/cheat-sheet/[MongoDB cheat sheet]
+
+.Courses
+* link:https://learn.mongodb.com/learning-paths/mongodb-database-admin-self-managed-path[MongoDB Database Admin Path (Self-Managed)]
+
+.Video
+* link:https://www.youtube.com/watch?v=cLsawKBUdTE&list=PLSmSa8KVdfSu-XFvjdWoN7z9WRoLly4my[YouTube Admin Path with examples]
+
+.PMDB
+* link:https://docs.percona.com/percona-server-for-mongodb/8.0/index.html[Percona Server for MongoDB 8.0 Documentation]
+
+== HaProxy
+
+.Haproxy
+* link:https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/[Docs]
+
+* link:https://github.com/olafz/percona-clustercheck[Percona Cluster Check]
+
+* link:
+
+
+== Kubernetes
+
+.PerconaOperator
+* link:https://docs.percona.com/percona-operator-for-mysql/pxc/index.html[Percona Operator]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
