@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Praktične vježbe :: Sportradar Nsoft Junior DBA Tutorials</title>
+    <meta name="generator" content="Antora 3.1.12">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="../..">Sportradar Nsoft Junior DBA Tutorials</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="junior-dba-docs" data-version="1.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Junior DBA Dokumentacija</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Uvod u DBA &amp; DevOps</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="roadmap.html">Learning roadmap</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="labs.html">Praktične vježbe</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Junior DBA Dokumentacija</span>
+    <span class="version">1.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="index.html">Junior DBA Dokumentacija</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">1.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Junior DBA Dokumentacija</a></li>
+    <li><a href="labs.html">Praktične vježbe</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///home/tonia/junior-dba-docs/docs/modules/ROOT/pages/labs.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Praktične vježbe</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dobrodošli u praktični dio!</p>
+</div>
+<div class="paragraph">
+<p>U ovoj ću sekciji podijeliti svoje osobno iskustvo s postavljanjem, konfiguracijom i upravljanjem replikacijskim setovima. Sve vježbe izvodio sam lokalno koristeći Docker i Docker Compose, što mi je omogućilo da simuliram produkcijsko okruženje bez utjecaja na svoj sustav.</p>
+</div>
+<div class="paragraph">
+<p>Zapamti, iako sam ja pratio preporučene korake, ovo je tvoje igralište za učenje. Uvijek postoji više načina da se dođe do istog cilja, pa te ohrabrujem da istražuješ i druge opcije koje smatraš boljima ili zanimljivijima.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Logovi su ti najbolji prijatelj.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_mysql_asinkrona_replikacija"><a class="anchor" href="#_1_mysql_asinkrona_replikacija"></a>1. MySQL asinkrona replikacija</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Za bolje razumijevanje asinkrone replikacije, možete pogledati ovaj <a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-replication-in-mysql">Digital Ocean tutorial</a> (nije namijenjen za Docker, ali je vrlo koristan).</p>
+</div>
+<div class="paragraph">
+<p>Započnite s pripremom projektnog direktorija. Kreirajte novi folder u vašem <strong>~</strong> direktoriju i nazovite ga npr. <strong>DockerAR</strong>.
+Kada pokrenete <strong>docker-compose</strong>, ime foldera će automatski postati naziv <a href="https://docs.docker.com/compose/how-tos/project-name/">projekta</a>.
+Kreiramo datoteku config i u njoj pravimo master.cnf i slave.cnf sa varijablama potrebnim za asinkronu replikaciju.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cnf hljs" data-lang="cnf"># Na master serveru
+[mysqld]
+log_bin = mysql_bin
+server_id = 1
+binlog_format = ROW
+expire_logs_days = 7
+# Na slave serveru
+[mysqld]
+server_id = 2
+relay_log = mysql_relay_bin
+log_replica_updates = ON</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I još kreiramo foldere za logove(logmaster i logslave).
+Da bi mysql iz kontenjera mogao u njih pisati i čitati moramo mu dati potrebne dozvole.(chown i chmod)
+Koja grupa je mysql možemo saznati pomoću komande
+<code>docker exec --user mysql &lt;ime_kontejnera&gt; id</code></p>
+</div>
+<div class="paragraph">
+<p>sudo chown -R 1001:1001 master_data</p>
+</div>
+<div class="paragraph">
+<p>Zatim kreirajte file <strong>docker-compose.yaml</strong> unutar tog foldera. Dodajte sljedeći sadržaj za definiranje servisa:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">services:
+  master:              # definiramo prvi kontenjer
+    image: mysql:8.0  # vucemo image s docker huba s tagom 8.0
+    container_name: master  # dajemo ime kontenjeru za lakse referenciranje
+    ports:
+      -  "33063:3306"  # exposamo port 3306 iz kontenjera na port 33063 na hostu
+    volumes:                             # stvaramo *bind* volumene
+      -  ./master_data:/var/lib/mysql    # bindamo mysql datu na hosta da ostane persistana
+      -  ./config/master.cnf:/etc/mysql/conf.d/master.cnf  # bindamo mu da koristi nasu custom konfiguraciju
+      -  ./logmaster:/var/log/mysql      # bindamo logove da ih mozemo citati s hosta
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234         # root useru dajemo password
+  slave:             # definiramo drugi kontenjer
+    image: mysql:8.0
+    container_name: slave
+    ports:
+      -  "33064:3306"
+    volumes:
+      -  ./slave_data:/var/lib/mysql
+      -  ./config/slave.cnf:/etc/mysql/conf.d/slave.cnf
+      -  ./logslave:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 4321
+    depends_on:                  # da se ne pokrece ako master nije pokrenut
+      -  master</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Vrste <a href="https://docs.docker.com/engine/storage/bind-mounts/">volumena</a> u dockeru.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spajamo se na master server(<code>docker exec -it master bash</code>) i pravimo usera s grantovima potrebnim za replikaciju:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">mysql&gt; CREATE USER 'replica_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+Query OK, 0 rows affected (0.02 sec)
+mysql&gt; GRANT REPLICATION SLAVE ON *.* TO 'replica_user'@'%';
+Query OK, 0 rows affected (0.01 sec)
+mysql&gt; FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.01 sec)
+
+Unesemo nešto podataka i uradimo backup s mysqldump na masteru i restore na slaveu.
+
+``mysqldump -u root -p --all-databases &gt; backup.sql``
+
+Kopiramo backup iz master kontenjera u slave.
+
+``docker cp master:/backup.sql .`` ``docker cp ./backup.sql slave:/tmp``
+
+Uradimo restore i provjerimo jesu li podaci tu.
+
+mysql -u root -p &lt; backup.sql</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spojimo se na mastera opet i nađemo poziciju binlogova:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">mysql&gt; show master status\G
+*************************** 1. row ***************************
+             File: mysql-bin.000012
+         Position: 2400
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+
+Onda idemo na slave server i kucamo:
+[source, mysql]
+CHANGE MASTER TO
+  MASTER_HOST = 'master',
+  MASTER_USER = 'replica_user',
+  MASTER_PASSWORD = 'password',
+  MASTER_LOG_FILE = 'mysql-bin.000012',
+  MASTER_LOG_POS = 2400;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">mysql&gt; start slave;
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+mysql&gt; show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for source to send event
+                  Master_Host: master
+                  Master_User: replica_user
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000009
+          Read_Master_Log_Pos: 923
+               Relay_Log_File: mysql-relay-bin.000002
+                Relay_Log_Pos: 1012
+        Relay_Master_Log_File: mysql-bin.000009
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>U outputu za slave status vidimo da oba threada rade.
+Možemo testirati da ubacimo nešto podataka na master i vidimo hoće li se replicirali na slavea.
+U idućim vježbama susretati ćemo se još sa asinkronom replikacijom pa smo neke stvari ovdje izostavili.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_percona_sinkrona_replikacija"><a class="anchor" href="#_2_percona_sinkrona_replikacija"></a>2. Percona sinkrona replikacija</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.percona.com/percona-xtradb-cluster/8.4/docker-compose.html#directory-structure">Xtradb cluster docs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Tu ima detaljan vodič kako dignuti cluster, al' sam ja na ovome primjeru učio šta rade varijable koje možemo koristiti u cnf fileovima.
+Primjer cnf filea za node 1 kojega ćemo koristiti za ovaj cluster:</p>
+</div>
+<div class="paragraph">
+<p><strong>server-id=1</strong>: Jedinstveni identifikator za svaki MySQL poslužitelj u replikacijskom nizu.</p>
+</div>
+<div class="paragraph">
+<p><strong>datadir=/var/lib/mysql</strong>: Mapa gdje se nalaze sve baze podataka i tablice.</p>
+</div>
+<div class="paragraph">
+<p><strong>log-error=/var/log/mysql/error.log</strong>: Putanja do datoteke s bilješkama o pogreškama i upozorenjima.</p>
+</div>
+<div class="paragraph">
+<p><strong>log_slave_updates=1</strong>: Omogućuje da se promjene primljene s drugih servera bilježe u njegov binarni log. To je ključno za postavljanje replikacije u lancu.</p>
+</div>
+<div class="paragraph">
+<p><strong>pxc-encrypt-cluster-traffic=OFF</strong>: Isključuje enkripciju prometa između čvorova klastera.</p>
+</div>
+<div class="paragraph">
+<p><strong>pxc_strict_mode=PERMISSIVE</strong>: Dopušta korištenje eksperimentalnih varijabli, ali bilježi upozorenja u logove.</p>
+</div>
+<div class="paragraph">
+<p><strong>bind-address=0.0.0.0</strong>: Govori MySQL-u da sluša veze na svim mrežnim sučeljima. Umjesto *, koristi se 0.0.0.0.</p>
+</div>
+<div class="paragraph">
+<p><strong>binlog_format=ROW</strong>: Osigurava stabilnu Galera sinkronu replikaciju bilježenjem stvarnih promjena redaka u binarni log.</p>
+</div>
+<div class="paragraph">
+<p><strong>gtid_mode=ON</strong>: Uključuje Global Transaction ID za svaku transakciju, što pojednostavljuje replikaciju i oporavak.</p>
+</div>
+<div class="paragraph">
+<p><strong>enforce_gtid_consistency=ON</strong>: Strogo provodi GTID dosljednost, osiguravajući da su sve transakcije sigurne za GTID replikaciju.</p>
+</div>
+<div class="paragraph">
+<p><strong>binlog_expire_logs_seconds=604800</strong>: Automatski briše binarne logove starije od 7 dana.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_provider=/usr/lib64/galera4/libgalera_smm.so</strong>: Putanja do biblioteke koja implementira Galera replikacijski protokol.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_cluster_address=gcomm://</strong>: Adrese članova klastera. Ako je prazno (gcomm://), znači da je ovo prvi čvor (prvi koji se pokreće) i on uspostavlja klaster.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_slave_threads=2</strong>: Broj niti koje se koriste za primjenu promjena na čvoru, što ubrzava sinkronizaciju klastera.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_log_conflicts=ON</strong>: U logove bilježi konflikte koji nastaju u transakcijama.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_node_address=node1</strong>: IP adresa ili ime hosta ovog čvora.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_cluster_name=pxc-cluster</strong>: Ime klastera. Svi čvorovi s istim imenom čine klaster.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_node_name=node1</strong>: Jedinstveno ime čvora, koje se koristi za lakšu identifikaciju u logovima.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_sst_method=xtrabackup-v2</strong>: Metoda kojom se radi State Snapshot Transfer (SST). To je proces sinkronizacije novog čvora. xtrabackup-v2 je najčešća metoda.</p>
+</div>
+<div class="paragraph">
+<p><strong>wsrep_provider_options="gcache.size=1G;gcs.fc_limit=10;gcs.fc_factor=0.8;"</strong>: Varijable specifične za Galera replikaciju.Služe za kontrolu replikacije i stabilnost klustera.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_buffer_pool_size=1G</strong>: Jedna od najvažnijih varijabli za performanse. Određuje veličinu memorije za keširanje podataka i indeksa.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_log_buffer_size=8M</strong>: Određuje veličinu privremenog spremnika prije nego što se logovi transakcija sinkroniziraju na disk.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_log_file_size=128M</strong>: Veličina pojedinačne datoteke redo loga.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_autoinc_lock_mode=2</strong>: Način zaključavanja za AUTO_INCREMENT stupce. Vrijednost 2 omogućuje veću konkurentnost.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_file_per_table=1</strong>: Svaka tablica ima svoju .ibd datoteku, što olakšava upravljanje i oslobađanje prostora.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_flush_log_at_trx_commit=2</strong>: Određuje kada se logovi transakcija zapisuju na disk. Vrijednost 2 omogućuje da izgubimo podatke u rasponu od jedne sekunde, ali značajno poboljšava performanse.</p>
+</div>
+<div class="paragraph">
+<p><strong>innodb_flush_method=O_DIRECT</strong>: Metoda kojom se logovi zapisuju direktno na disk, zaobilazeći OS cache, što poboljšava I/O performanse.</p>
+</div>
+<div class="paragraph">
+<p>Teorijsko objašnjavanje svake varijable je korisno, ali prava istina je da se Galera i MySQL konfiguracijske varijable najbolje uče kroz praksu.</p>
+</div>
+<div class="paragraph">
+<p>Razne situacije zahtijevaju različite konfiguracije, a najbolje je testirati kako se klaster ponaša nakon svake promjene. Eksperimentiranje u kontroliranom okruženju, poput Docker kontejnera, omogućuje ti da sigurno istražuješ kako svaka varijabla utječe na performanse i stabilnost.</p>
+</div>
+<div class="paragraph">
+<p>Svakako preporučujem da nastaviš istraživati i testirati druge varijable, posebno one unutar wsrep_provider_options, jer one imaju najveći utjecaj na ponašanje Galera klastera. Vremenom ćeš steći duboko razumijevanje koje ti ni jedna teorija ne može pružiti.</p>
+</div>
+<div class="sect2">
+<h3 id="_2_0_1_bootstrapanje_noda"><a class="anchor" href="#_2_0_1_bootstrapanje_noda"></a>2.0.1 Bootstrapanje noda</h3>
+<div class="paragraph">
+<p>Bootstrapanje je proces pokretanja Galera klastera od nule. To je prva i najvažnija akcija koja se radi kad se želi dignuti klaster, bilo nakon prvog postavljanja, bilo nakon katastrofe (poput vraćanja iz backupa).</p>
+</div>
+<div class="paragraph">
+<p>Kada se bootstrapa, jedan čvor (node) se pokreće kao "izvor istine". On je privremeni, jedini aktivni član klastera i označava početnu točku za sve replikacije. Ostali čvorovi će se spajati na njega, preuzimati njegovo stanje, i tek tada se klaster smatra funkcionalnim.</p>
+</div>
+<div class="paragraph">
+<p>grastate.dat je datoteka koju Galera koristi za pohranu informacija o stanju čvora. Galera prati tri ključna podatka:</p>
+</div>
+<div class="paragraph">
+<p><strong>UUID</strong> (Unique Universal ID): Jedinstveni identifikator klastera.</p>
+</div>
+<div class="paragraph">
+<p><strong>Seqno</strong> (Sequence Number): Redni broj zadnje transakcije koju je taj čvor primio.</p>
+</div>
+<div class="paragraph">
+<p><strong>safe_to_bootstrap</strong>: 0 znači da ovaj čvor nije siguran za pokretanje novog klastera. 1 znači da se može bootsrapati s ovog nodea.</p>
+</div>
+<div class="paragraph">
+<p>Galera koristi ove informacije pri pokretanju čvora da bi odlučila što treba učiniti.</p>
+</div>
+<div class="paragraph">
+<p>Ako je UUID i Seqno isti kao na drugim čvorovima u klasteru, on se jednostavno spaja i replicira promjene.</p>
+</div>
+<div class="paragraph">
+<p>Ako se razlikuje, on ulazi u proces State Snapshot Transfer (SST). To je proces u kojem traži od drugog čvora da mu pošalje kompletnu kopiju svih podataka, što se i događa u tvom restore scenariju.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_1_testiranje_pomoću_sysbencha"><a class="anchor" href="#_2_1_testiranje_pomoću_sysbencha"></a>2.1 Testiranje pomoću sysbencha</h3>
+<div class="paragraph">
+<p>U docker-compose.yaml dodati servis za sysbench:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">tools:
+    image: debian:12
+    container_name: sysbenchtool2
+    command: &gt;
+      bash -c "apt-get update &amp;&amp; apt-get install -y sysbench &amp;&amp; sleep infinity"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Na jednom nodu pravimo usera i bazu za testiranje:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">mysql&gt; CREATE USER 'sbtest'@'%' IDENTIFIED BY 'pamet';
+       GRANT ALL ON sbtest.* TO 'sbtest'@'%';
+       CREATE SCHEMA sbtest;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dignemo servis tools sa sysbenchom i počnemo testiranje:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sysbench /usr/share/sysbench/oltp_write_only.lua --mysql-host=node1 --mysql-port=3306 --mysql-user=sbtest --mysql-password=pamet --mysql-db=sbtest --table_size=100000 --tables=10 --threads=25 --histogram=on --time=30 prepare
+
+sysbench /usr/share/sysbench/oltp_write_only.lua --mysql-host=node1 --mysql-port=3306 --mysql-user=sbtest --mysql-password=pamet --mysql-db=sbtest --table_size=100000 --tables=10 --threads=25 --histogram=on --time=30 run
+
+sysbench /usr/share/sysbench/oltp_write_only.lua --mysql-host=node1 --mysql-port=3306 --mysql-user=sbtest --mysql-password=pamet --mysql-db=sbtest --table_size=100000 --tables=10 --threads=25 --histogram=on --time=30 cleanup</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Prepare unosi podatke u tablice, run odrađiva transakcije a cleanup čisti sve iza.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_2_dodavanje_asinkronog_nodea_preko_gtid"><a class="anchor" href="#_2_2_dodavanje_asinkronog_nodea_preko_gtid"></a>2.2 Dodavanje asinkronog nodea preko GTID</h3>
+<div class="paragraph">
+<p>Dodamo servis u docker-compose.yaml za asinkroni node:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  areplica:
+    image: percona/percona-xtradb-cluster:8.0.41
+    container_name: areplica
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    volumes:
+      -  ./areplica_data:/var/lib/mysql
+      -  ./config/areplica.cnf:/etc/mysql/conf.d/my.cnf
+      -  ./logar:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 4GwihtremRDcQF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>U konfiguracijski file za asinkroni node stavimo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cnf hljs" data-lang="cnf">[mysqld]
+
+server-id=4
+bind_address=0.0.0.0
+datadir=/var/lib/mysql
+relay-log=/var/log/mysql/mysql-relay-bin.log
+log-error=/var/log/mysql/error.log
+binlog_format=ROW
+binlog_expire_logs_seconds=604800
+gtid_mode=ON
+enforce_gtid_consistency=ON
+log_slave_updates=1
+innodb_buffer_pool_size=1G
+innodb_log_buffer_size=8M
+innodb_log_file_size=128M
+innodb_autoinc_lock_mode=2
+innodb_file_per_table=1
+innodb_flush_log_at_trx_commit=1
+innodb_flush_method=O_DIRECT
+read_only=ON</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dignemo asinkroni node i onda radimo fizički backup i restore pomoću xtrabackupa.</p>
+</div>
+<div class="paragraph">
+<p>Za svaki slučaj obrišemo datu asinkronom nodu da restore može biti čist.</p>
+</div>
+<div class="paragraph">
+<p><code>sudo rm -rf asinkrona_data/*</code></p>
+</div>
+<div class="paragraph">
+<p>Na masteru radimo backup:</p>
+</div>
+<div class="paragraph">
+<p>/usr/bin/pxc_extra/pxb-8.0/bin/xtrabackup --backup --target-dir=/tmp/backup --user=root --password=4GwihtremRDcQF --slave-info``</p>
+</div>
+<div class="paragraph">
+<p>Možemo sherati bindani folder tako da ne moramo prebacivati backup, samo u volumes nodu gdje radimo backup i asinkronoj replici dodamo ovu liniju:</p>
+</div>
+<div class="paragraph">
+<p><code>-  ./backups:/tmp/backups</code></p>
+</div>
+<div class="paragraph">
+<p>Radimo restore pomoću komandi:</p>
+</div>
+<div class="paragraph">
+<p><code>/usr/bin/pxc_extra/pxb-8.0/bin/xtrabackup --prepare --target-dir=/tmp/backups</code></p>
+</div>
+<div class="paragraph">
+<p><code>/usr/bin/pxc_extra/pxb-8.0/bin/xtrabackup --copy-back --target-dir=/tmp/backups</code></p>
+</div>
+<div class="paragraph">
+<p>Restoranoj dati moramo dati opet permisije:</p>
+</div>
+<div class="paragraph">
+<p><code>sudo chown -R 1001:1001 areplica_data</code></p>
+</div>
+<div class="paragraph">
+<p>Na nekom master nodu napravimo replika usera i onda na slaveu kucamo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">CHANGE MASTER TO
+  MASTER_HOST = 'node1',
+  MASTER_PORT = 3306,
+  MASTER_USER = 'replica_user',
+  MASTER_PASSWORD = 'password',
+  SOURCE_DELAY=60,
+  MASTER_AUTO_POSITION = 1;
+
+start slave;
+show slave status\G</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Source_delay daje replikacijski delay od 60s. Što je korisno u nekim situacijama.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>U nekim situacijama korisna je komanda, služi za preskakanje ako neka transakcija zapne, al se mora koristiti s oprezom pošto utječe na integritet podataka.</p>
+</div>
+<div class="paragraph">
+<p>``STOP REPLICA;</p>
+</div>
+<div class="paragraph">
+<p>SET GLOBAL SQL_SLAVE_SKIP_COUNTER = 1;</p>
+</div>
+<div class="paragraph">
+<p>START REPLICA;``</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_3_dodavanje_haproxya_ispred_instanci"><a class="anchor" href="#_2_3_dodavanje_haproxya_ispred_instanci"></a>2.3 Dodavanje Haproxya ispred instanci</h3>
+<div class="paragraph">
+<p>U postojeći setup u docker-compose.yaml dodajemo image za haproxy:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">haproxy:
+    container_name: haproxy
+    image: haproxy:3.2
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    volumes:
+      -  ./config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    logging:
+        driver: "local"
+        options:
+            max-size: "10m"
+            max-file: "3"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I pravimo cfg file na gore pomenutoj lokaciji gdje ubacivamo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cfg hljs" data-lang="cfg">global
+    log stdout local0
+    maxconn 4096
+    daemon
+
+defaults
+    log global
+    mode tcp
+    option tcplog
+    option dontlognull
+    option log-health-checks
+    option asap
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+    retries 3
+
+frontend write
+    bind *:3306
+    mode tcp
+    option clitcpka
+    default_backend mysql_backend_write
+
+frontend read
+    bind *:3307
+    mode tcp
+    option clitcpka
+    default_backend mysql_backend_read
+
+backend mysql_backend_write
+    mode tcp
+    option srvtcpka
+    balance leastconn
+    server node1 node1:3306 check inter 2s rise 2 fall 3 weight 1
+    server node2 node2:3306 check inter 2s rise 2 fall 3 weight 1 backup
+    server node3 node3:3306 check inter 2s rise 2 fall 3 weight 1 backup
+
+backend mysql_backend_read
+    mode tcp
+    option srvtcpka
+    balance leastconn
+    server node1 node1:3306 check inter 2s rise 2 fall 3 weight 1 backup
+    server node2 node2:3306 check inter 2s rise 2 fall 3 weight 1
+    server node3 node3:3306 check inter 2s rise 2 fall 3 weight 1</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Ako se konfiguracija piše u VSCodeu može se desiti da ne prođe jer zadnji red treba biti prazan da zna kada je kraj konfiguracije, pa pomoću nekog drugog txt editora dodamo prazan zadnji red pošto to ne očita u VSCodeu.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Ova konfiguracija omogućuje da writeovi uvijek idu na jedan node a readovi na druga dva.</p>
+</div>
+<div class="paragraph">
+<p>Može se sa sysbench alatom testirati radi li.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_4_upotreba_percona_tool_kita"><a class="anchor" href="#_2_4_upotreba_percona_tool_kita"></a>2.4 Upotreba Percona tool kita</h3>
+<div class="paragraph">
+<p>Prvo ubacimo sliku percona tool kita u yaml file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">perconatool:
+    image: perconalab/percona-toolkit:latest
+    container_name: ptoolkit
+    command: tail -F /dev/null   # s ovom komandom kontenjer stalno ostaje živ da mi možemo vježbati i istraživati</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>pt-archiver</strong></p>
+</div>
+<div class="paragraph">
+<p>Služi za arhiviranje podataka. Najveća mu je prednost što može raditi na 'živim' tablicama.
+Vježbamo na istom percona setupu kao source a dignuti cemo mariadb cluster koji ce nam poslužiti kao destination. Pošto imamo samo sbtest bazu prebaciti ćemo jedan dio neke tablice u arhivu.
+Možemo uzeti sbtest5 tablicu i prebaciti sve podatke koji imaju id manji od 2000 u arhivsku bazu.</p>
+</div>
+<div class="paragraph">
+<p>Na source serveru kucamo:
+<code>show create table sbtest5\G</code></p>
+</div>
+<div class="paragraph">
+<p>Na destination serveru pravimo bazu naziva <strong>arhiva</strong> i kopiramo create table što smo dobili iz prošle komande.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">MariaDB [arhiva]&gt; CREATE TABLE `arhiva_sbtest5` (
+    -&gt;   `id` int NOT NULL AUTO_INCREMENT,
+    -&gt;   `k` int NOT NULL DEFAULT '0',
+    -&gt;   `c` char(120) NOT NULL DEFAULT '',
+    -&gt;   `pad` char(60) NOT NULL DEFAULT '',
+    -&gt;   PRIMARY KEY (`id`),
+    -&gt;   KEY `k_5` (`k`)
+    -&gt; ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+Query OK, 0 rows affected (0.030 sec)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Na source smo provjerili i koliko imamo tih podataka da možemo potvrditi prebacivanje.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">mysql&gt; SELECT COUNT(*) FROM sbtest5 WHERE id &lt; 2000;
++----------+
+| COUNT(*) |
++----------+
+|      667 |
++----------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ulazimo u kontenjer gdje nam se nalazi percona tool kit i istraživamo koje nam sve opcije trebaju da prebacimo podatke.</p>
+</div>
+<div class="paragraph">
+<p><code>bash-5.1$ pt-archiver --source 'h=node1,u=root,p=4GwihtremRDcQF,P=3306,D=sbtest,t=sbtest5' --where 'id &lt; 2000' --dest 'h=172.22.0.2,u=root,p=JNC8D6HjtusQ5i,P=3306,D=arhiva,t=arhiva_sbtest5' --limit=30 --dry-run --statistics --no-check-columns --no-delete --retries=5 --sleep=1</code></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Uvijek prvo probamo s dry run, gdje će komanda proći sve korake ali neće izvršiti komandu.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pt-archiver \
+    --source 'h=node1,u=root,p=4GwihtremRDcQF,P=3306,D=sbtest,t=sbtest5' \
+    --where 'id &lt; 2000' \
+    --dest 'h=172.22.0.2,u=root,p=JNC8D6HjtusQ5i,P=3306,D=arhiva,t=arhiva_sbtest5' \
+    --limit=30 \
+    --statistics \
+    --no-check-columns \
+    --retries=5 \
+    --sleep=1</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">Started at 2025-09-12T10:21:45, ended at 2025-09-12T10:22:11
+Source: D=sbtest,P=3306,h=node1,p=...,t=sbtest5,u=root
+Dest:   D=arhiva,P=3306,h=172.22.0.2,p=...,t=arhiva_sbtest5,u=root
+SELECT 667
+INSERT 667
+DELETE 667
+Action         Count       Time        Pct
+sleep             23    23.0064      85.48
+commit          1336     3.0007      11.15
+deleting         667     0.3710       1.38
+inserting        667     0.3458       1.28
+select            24     0.0322       0.12
+other              0     0.1581       0.59</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Možemo ući u mariadb da vidimo jesu tu podaci.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">MariaDB [arhiva]&gt; select count(*) from arhiva_sbtest5;
++----------+
+| count(*) |
++----------+
+|      667 |
++----------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>pt-online-schema-change</strong></p>
+</div>
+<div class="paragraph">
+<p>Ovaj alat služi za promjenu sheme tablice bez zaključavanja tablice i bez ikakvog zastoja za bazu. Idealan je za produkcijske sustave gdje se ne smije prekidati rad aplikacija.</p>
+</div>
+<div class="paragraph">
+<p>U vježbi ćemo dodati novi stupac created_at u arhivsku tablicu, kako bismo znali kada su podaci prebačeni u arhivu.</p>
+</div>
+<div class="paragraph">
+<p>Prvo, uđi u svoj MariaDB kontejner i provjeri trenutnu shemu tablice arhiva_sbtest5.
+To je važno da se uvjeriš da stupac ne postoji i da ispravno ciljaš tablicu.</p>
+</div>
+<div class="paragraph">
+<p><code>MariaDB [arhiva]&gt; show create table arhiva_sbtest5\G</code></p>
+</div>
+<div class="paragraph">
+<p>Sada, unutar ptoolkit kontejnera, pokreni pt-online-schema-change. Koristit ćemo --dry-run da vidimo hoće li sve proći bez problema, ali bez stvarne izmjene tablice.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pt-online-schema-change \
+    --alter "ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER pad" \
+    --host=maria1 \
+    --user=root \
+    --password=JNC8D6HjtusQ5i \
+    --port=3306 \
+    --database=arhiva \
+    --table=arhiva_sbtest5 \
+    --max-load Threads_running=50,Threads_connected=100 \
+    --chunk-size=1000 \
+    --check-interval=1 \
+    --recursion-method=NONE \
+    --dry-run</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nakon što se uvjeriš da je dry-run prošao bez greške, možeš pokrenuti pravu promjenu. Jednostavno ukloni --dry-run i dodaj opciju --execute.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">MariaDB [arhiva]&gt; show create table arhiva_sbtest5\G
+*************************** 1. row ***************************
+       Table: arhiva_sbtest5
+Create Table: CREATE TABLE `arhiva_sbtest5` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `k` int(11) NOT NULL DEFAULT 0,
+  `c` char(120) NOT NULL DEFAULT '',
+  `pad` char(60) NOT NULL DEFAULT '',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `k_5` (`k`)
+) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+1 row in set (0.001 sec)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_5_indexi_u_mysqlu"><a class="anchor" href="#_2_5_indexi_u_mysqlu"></a>2.5 Indexi u MySQLu</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_mariadb_sinkrona_replikacija"><a class="anchor" href="#_3_mariadb_sinkrona_replikacija"></a>3. MariaDB sinkrona replikacija</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dignuti cluster s mariadb node-a.Jedina razlika od Percona clustera je što u cnf fileu moramo dodati usera za sst backup <code>wsrep_sst_auth=root:pass</code>  pa idemo odmah na iduću vježbu.</p>
+</div>
+<div class="sect2">
+<h3 id="_3_1_mariadb_full_fizički_backup_i_restore"><a class="anchor" href="#_3_1_mariadb_full_fizički_backup_i_restore"></a>3.1 Mariadb full fizički backup i restore</h3>
+<div class="sect3">
+<h4 id="_backup"><a class="anchor" href="#_backup"></a>backup</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://mariadb.com/docs/server/server-management/install-and-upgrade-mariadb/installing-mariadb/binary-packages/automated-mariadb-deployment-and-administration/docker-and-mariadb/container-backup-and-restoration">Maria-backup docs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Odvajanje backup procesa u zasebnu komponentu (kontejner) omogućuje standardizaciju. Bez obzira na vrstu baze podataka (MySQL, MariaDB, MongoDB, itd.), backup kontejner uvijek radi na isti način. Spoji se na bazu, povuče podatke, i spremi ih na željenu lokaciju. To znatno pojednostavljuje automatizaciju i upravljanje infrastrukturom.</p>
+</div>
+<div class="paragraph">
+<p>Iako se može činiti kao dodatni korak, korištenje zasebnog kontejnera za backup dugoročno smanjuje složenost, povećava sigurnost i stabilnost produkcijskog sustava. Zato je to best practice u modernim infrastrukturama.</p>
+</div>
+<div class="paragraph">
+<p>Dignemo backup kontenjer, a yaml za njega smo stavili:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">mariabackup:   # pravimo servis za backup
+    image: mariadb:11.4   # vucem citav image mariadb posto ce imati toolse, a nisam mogao naci sliku samo s toolsima
+    container_name: mariabackup   # dajemo ime kontenjeru
+    deploy:                       # ogranicivamo resurse
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    volumes:                     # mountamo volume od node2 u kontenjer za backup i volume gdje cemo cuvati backupe
+      -  ./maria2_datanew:/var/lib/mysql:ro
+      -  ./backups2:/var/backups
+    command: ["sleep", "infinity"]   # kazem kontenjeru ako mu se ukine glavni proces(mariadb) da ipak ostane u njemu</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Napravimo na nekom nodu usera za backup s potrebnim minimalnim privilegijama:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">CREATE USER 'mariabackup'@'%'
+ IDENTIFIED BY 'mbu_passwd';
+
+ GRANT RELOAD, PROCESS, LOCK TABLES, REPLICATION CLIENT
+ ON *.* TO 'mariabackup'@'%';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Uđemo u backup kontenjer i kucamo komandu:</p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --backup --host=maria2 -u mariabackup -p mbu_passwd --target-dir=/var/backups</code></p>
+</div>
+<div class="paragraph">
+<p>Sada imamo backup u folderu na hostu, jer smo bindali target dir.</p>
+</div>
+<div class="paragraph">
+<p>Ovo je najjednostavniji oblik backupa, backupe još možemo npr. streamati i kompresirati u jedan file i slati u neki bucket, što može biti neka druga vježba u kombinaciji sa skriptiranjem backupa i stavljanjem crontabova za redovno okidanje.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_restore"><a class="anchor" href="#_restore"></a>restore</h4>
+<div class="paragraph">
+<p>U praksi, restore najčešće koristimo u dva scenarija:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Testiranje ispravnosti backupa: Redovito vraćanje baze podataka na testnom poslužitelju jedini je siguran način da se provjeri radi li proces backupa ispravno. To je kritičan korak u osiguravanju da, u slučaju prave katastrofe, naša sigurnosna kopija zaista funkcionira i da su podaci pouzdani.</p>
+</li>
+<li>
+<p>Stvarni oporavak od katastrofe (DR): Ako se dogodi najgore, ovaj proces nam omogućuje da vratimo sustav u operativno stanje koristeći posljednju ispravnu kopiju podataka.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Dakle, iako je restore operacija koju ne želimo izvoditi, njezino testiranje je obavezno. Dobra praksa je da se to radi redovito, čime se stječe sigurnost u ispravnost našeg procesa i spremnost za svaki scenarij.</p>
+</div>
+<div class="paragraph">
+<p>Simuliramo katastrofu i spustimo sva 3 nodea.</p>
+</div>
+<div class="paragraph">
+<p>Dignemo kontenjer za backup i restore i u njemo odmah mozemo restorati podatke pošto je data folder bindan za node na kojem ćemo raditi bootstrap u ovom slučaju node naziva maria2.</p>
+</div>
+<div class="paragraph">
+<p>Prvo radimo prepare pa kopiranje fileova:</p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --prepare --target-dir=/var/backups</code></p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --copy-back --target-dir=/var/backups</code></p>
+</div>
+<div class="paragraph">
+<p>Dajemo novoj dati prava da mariadb proces ima prava koristiti i čitati novu datu <code>sudo chown -R 1001:1001 maria2_datanew</code></p>
+</div>
+<div class="paragraph">
+<p>Sada pripremimo node koji je dijelio datu za bootstrap. To jest da pravi novi cluster koji će ostalima biti novi izvor istine.</p>
+</div>
+<div class="paragraph">
+<p>Komandu za boostrap u yaml fileu stavljamo na njega. A ostalima provjerimo da su <code>Safe to bootstrap: 0</code> u grastate datoteci.</p>
+</div>
+<div class="paragraph">
+<p>Dižemo i druga dva noda koji će se pomoću SST spojiti i formirati novi cluster od 3 nodea.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_2_mariadb_incremental_fizički_backup_i_restore"><a class="anchor" href="#_3_2_mariadb_incremental_fizički_backup_i_restore"></a>3.2 Mariadb incremental fizički backup i restore</h3>
+<div class="paragraph">
+<p>Glavni razlog zašto koristimo inkrementalne backupe je učinkovitost. Dok je puni backup (full backup) ključna polazna točka, njegovo svakodnevno ponavljanje može biti vrlo skupo u smislu vremena i prostora na disku. Zamisli da imaš bazu podataka od 500 GB. Svaki dan raditi novi, puni backup znači da ti treba dodatnih 500 GB prostora i sat vremena ili više da se završi. To jednostavno nije održivo.</p>
+</div>
+<div class="paragraph">
+<p>Tu na scenu stupa inkrementalni backup. On kopira samo one promjene (novi redovi, ažuriranja, brisanja) koje su se dogodile od posljednjeg backupa, bez obzira je li taj bio puni ili inkrementalni. Ova metoda štedi:</p>
+</div>
+<div class="paragraph">
+<p>Prostor na disku: Umjesto gigabajta, inkrementalni backup može biti samo nekoliko megabajta ili gigabajta, ovisno o aktivnosti baze.</p>
+</div>
+<div class="paragraph">
+<p>Vrijeme: Proces je mnogo brži jer ima manje podataka za kopiranje.</p>
+</div>
+<div class="paragraph">
+<p>Incremental backup ne mozemo raditi bez full backupa a imamo ga iz prijasnje vjezbe pa sad unesemo nesto novih podataka da imamo sta backupirati s incremental backupom.</p>
+</div>
+<div class="paragraph">
+<p>Incremental backup opet radimo iz backup kontenjera:</p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --backup --target-dir=/var/backups/noviinc --incremental-basedir=/var/backups2 --host=maria2 --user=mariabackup --password=mbu_passwd</code></p>
+</div>
+<div class="paragraph">
+<p>target dir je direktorij gdje će biti sačuvan incr backup a base dir je direktorij od full backupa.</p>
+</div>
+<div class="paragraph">
+<p>Sada opet spustamo sva 3 noda i brisemo im datu iz bindanih volumena.</p>
+</div>
+<div class="paragraph">
+<p>Onda radimo prepare backupa, prvo full pa incremental:</p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --prepare --target-dir=/var/backups/novi</code></p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --prepare --target-dir=/var/backups/novi --incremental-dir=/var/backups/noviinc</code></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Kad imamo više incrementalnih backupa tipa ponedjeljak, utorak, srijeda, četvrtak&#8230;&#8203; Prvo prepare ponedjeljak pa utorak pa srijeda pa četvrtak&#8230;&#8203;
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Pa radimo restore:</p>
+</div>
+<div class="paragraph">
+<p><code>mariadb-backup --copy-back --target-dir=/var/backups/novi</code></p>
+</div>
+<div class="paragraph">
+<p>Dizemo node2 s novim izvorom istine i spajamo druga dva noda.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_3_mariadb_logički_backup_s_mydumperom"><a class="anchor" href="#_3_3_mariadb_logički_backup_s_mydumperom"></a>3.3 Mariadb logički backup s Mydumperom</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_3_4_mariadb_pitrpoint_in_time_restore_proces"><a class="anchor" href="#_3_4_mariadb_pitrpoint_in_time_restore_proces"></a>3.4 Mariadb PITR(Point in time restore) proces</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_3_5_vježbanje_skripti_za_backupe"><a class="anchor" href="#_3_5_vježbanje_skripti_za_backupe"></a>3.5 Vježbanje skripti za backupe</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_3_6_postavljanje_maxscale_proxya_ispred_clustera"><a class="anchor" href="#_3_6_postavljanje_maxscale_proxya_ispred_clustera"></a>3.6 Postavljanje Maxscale proxya ispred clustera</h3>
+<div class="paragraph">
+<p>U docker-compose.yaml dodajemo image od maxscalea:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">maxscale:
+    image: mariadb/maxscale:24.02
+    container_name: maxscale
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    volumes:
+      -  ./config/maxscale.cnf:/etc/maxscale.cnf
+      -  ./logmax:/var/log/maxscale
+      -  ./maxdata:/var/lib/maxscale</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>U cnf file ./config/maxscale.cnf ubacujemo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cfg hljs" data-lang="cfg">[maxscale]
+threads=2
+log_augmentation=1
+ms_timestamp=1
+logdir=/var/log/maxscale
+
+[server1]
+type=server
+address=mariam1
+port=3306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=mariam2
+port=3306
+protocol=MariaDBBackend
+
+[server3]
+type=server
+address=mariam3
+port=3306
+protocol=MariaDBBackend
+
+[ar_server]
+type=server
+address=amariam4
+port=3306
+protocol=MariaDBBackend
+
+[Galera-Monitor]
+type=monitor
+module=galeramon
+servers=server1,server2,server3
+user=maxscale
+password=rNtOdlAg30SkaF
+monitor_interval=2000ms
+
+[Async-Slave-Monitor]
+type=monitor
+module=mariadbmon
+servers=ar_server
+user=maxscale
+password=rNtOdlAg30SkaF
+monitor_interval=2000ms
+
+[Read-Write-Service]
+type=service
+router=readwritesplit
+servers=server1,server2,server3
+user=maxscale
+password=rNtOdlAg30SkaF
+master_failure_mode=fail_on_write
+connection_keepalive=300s
+
+[Read-Write-Listener]
+type=listener
+service=Read-Write-Service
+protocol=MariaDBClient
+port=4306
+
+[RO-Service]
+type=service
+router=readconnroute
+servers=server1,server2,server3
+router_options=slave
+user=maxscale
+password=rNtOdlAg30SkaF
+
+[RO-Listener]
+type=listener
+service=RO-Service
+protocol=MariaDBClient
+port=4010</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ova MaxScale konfiguracija je postavljena da upravlja prometom u klasteru baze podataka i usmjerava upite na odgovarajuće servere.</p>
+</div>
+<div class="paragraph">
+<p>Globalne postavke za maxscale
+Ovo su osnovne globalne postavke, kao što su broj niti (threads=2) i lokacija logova (logdir=/var/log/maxscale).</p>
+</div>
+<div class="paragraph">
+<p>Serveri
+Definira četiri fizička servera baze podataka (mariam1, mariam2, mariam3, amariam4) s njihovim adresama i portovima.</p>
+</div>
+<div class="paragraph">
+<p>Monitori
+Dva monitora prate status i topologiju servera.</p>
+</div>
+<div class="paragraph">
+<p>Galera-Monitor prati Galera klaster (serveri 1-3).</p>
+</div>
+<div class="paragraph">
+<p>Async-Slave-Monitor prati asinhronu repliku (ar_server).</p>
+</div>
+<div class="paragraph">
+<p>Servisi
+Ovo su logike za usmjeravanje prometa.</p>
+</div>
+<div class="paragraph">
+<p>Read-Write-Service koristi readwritesplit ruter. On automatski razdvaja upite za čitanje od upita za pisanje i šalje ih na odgovarajuće servere (master/slave).</p>
+</div>
+<div class="paragraph">
+<p>RO-Service koristi readconnroute ruter s opcijom slave. Ovaj servis je namijenjen isključivo za upite za čitanje, koje usmjerava samo na slave servere radi balansiranja opterećenja.</p>
+</div>
+<div class="paragraph">
+<p>Listeneri
+Listeneri su ulazne tačke za klijente.</p>
+</div>
+<div class="paragraph">
+<p>Read-Write-Listener na portu 4306 usmjerava promet na Read-Write-Service.</p>
+</div>
+<div class="paragraph">
+<p>RO-Listener na portu 4010 usmjerava promet na RO-Service, omogućavajući samo operacije čitanja.</p>
+</div>
+<div class="paragraph">
+<p>Ukratko, konfiguracija pruža dva različita načina pristupa klasteru: jedan s punim pravima (čitanje/pisanje) i jedan isključivo za čitanje.</p>
+</div>
+<div class="paragraph">
+<p>Na jednom nodu pravimo usera za maxscale da ima pristup:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">CREATE USER 'maxscale'@'%' IDENTIFIED BY 'rNtOdlAg30SkaF';
+ GRANT SELECT ON mysql.user TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.db TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.tables_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.columns_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.procs_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.proxies_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.roles_mapping TO 'maxscale'@'%';
+ GRANT SHOW DATABASES ON *.* TO 'maxscale'@'%';
+ GRANT RELOAD ON *.* TO 'maxscale'@'%';
+ GRANT PROCESS ON *.* TO 'maxscale'@'%';
+ GRANT SLAVE MONITOR ON *.* TO 'maxscale'@'%';
+ GRANT REPLICATION CLIENT ON *.* TO 'maxscale'@'%';
+ GRANT REPLICATION SLAVE ON *.* TO 'maxscale'@'%';
+ FLUSH PRIVILEGES;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dižemo maxscale, ulazimo u kontenjer i tu možemo vidjeti servere s komandom:</p>
+</div>
+<div class="paragraph">
+<p><code>maxctrl list servers</code></p>
+</div>
+<div class="paragraph">
+<p>Već spojenu asinkronu repliku koja ide preko GTID možemo joj sad prebaciti konekciju da ide preko maxscale i to RO-Listenera.
+Na asinkronoj replici kucamo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">stop slave;
+CHANGE MASTER TO
+ MASTER_HOST='maxscale',
+ MASTER_PORT=4010,
+ MASTER_USER='maxscale',
+ MASTER_PASSWORD='rNtOdlAg30SkaF',
+ MASTER_USE_GTID=slave_pos,
+ MASTER_SSL=0;
+start slave;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">MariaDB [(none)]&gt; show slave status\G
+*************************** 1. row ***************************
+                Slave_IO_State: Waiting for master to send event
+                   Master_Host: maxscale
+                   Master_User: maxscale
+                   Master_Port: 4010
+                 Connect_Retry: 60
+               Master_Log_File: master-bin.000045
+           Read_Master_Log_Pos: 359
+                Relay_Log_File: mysql-relay-bin.000002
+                 Relay_Log_Pos: 659
+         Relay_Master_Log_File: master-bin.000045
+              Slave_IO_Running: Yes
+             Slave_SQL_Running: Yes</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_7_dodavanje_i_proučavanje_tls_certifikata_za_mariadb_instance"><a class="anchor" href="#_3_7_dodavanje_i_proučavanje_tls_certifikata_za_mariadb_instance"></a>3.7 Dodavanje i proučavanje TLS certifikata za MariaDB instance</h3>
+<div class="paragraph">
+<p>Kreiramo direktorij gdje cemo cuvati certifikate</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``mkdir certs``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Uđemo u taj direktorij i kreiramo certifikate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> openssl genrsa 2048 &gt; ca-key.pem
+
+ openssl req -new -x509 -nodes -days 3650 -key ca-key.pem -out ca.pem -subj "/CN=MyMariaDBClusterCA/O=MyOrg/C=BA"
+
+ openssl req -newkey rsa:2048 -days 3650 -nodes -keyout server-key.pem -out server-req.pem -subj "/CN=server.mycluster.local/O=MyOrg/C=BA"
+
+ openssl x509 -req -in server-req.pem -days 3650 -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out server-cert.pem
+
+ openssl req -newkey rsa:2048 -days 3650 -nodes -keyout client-key.pem -out client-req.pem -subj "/CN=client.mycluster.local/O=MyOrg/C=BA"
+
+ openssl x509 -req -in client-req.pem -days 3650 -CA ca.pem -CAkey ca-key.pem -set_serial 02 -out client-cert.pem
+
+ rm *-req.pem</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dobijemo 6 fileova, od kojih ca key je kljuc kojim pravimo ca.pem koji nam sluzi za opečatiti ostale certifikate kao npr serverskih i klijentskih.</p>
+</div>
+<div class="paragraph">
+<p>Zbog jednostavnosti vježbe kopirali smo ih u jos jedan folder i jednome smo folderu dali permisije od mariadb a drugom od maxscalea.</p>
+</div>
+<div class="paragraph">
+<p>Onda smo ih mountali u kontenjere s opcijom read only, maria u maria , max u max.</p>
+</div>
+<div class="paragraph">
+<p>Prvo smo ih ubacili u nodove od galera clustera da se enkriptira promet izmedju replika. Galerin interni SSL nam kaze da mozemo staviti server certifikate da ne treba client.</p>
+</div>
+<div class="paragraph">
+<p>Onda serverske certifikate stavljamo na svaki node a klijentske u cnf maxscale ispod svakog definiranog servera. Da pokrijemo komunikaciju izmedju maxscalea i naseg galera clustera.</p>
+</div>
+<div class="paragraph">
+<p>Iduci korak je da serverske certifikate stavljamo na maxscale listenere da pokrijemo veze koje se spajaju na njih. Npr. kao veza asinkrone replikacije i maxscalea koju onda moramo uspostaviti sa:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql"> CHANGE MASTER TO
+ MASTER_HOST='maxscale',
+ MASTER_PORT=4010,
+ MASTER_USER='maxscale',
+ MASTER_PASSWORD='rNtOdlAg30SkaF',
+ MASTER_USE_GTID=slave_pos;
+ MASTER_SSL=1,
+ MASTER_SSL_CERT='/etc/mysql/certs/client-cert.pem',
+ MASTER_SSL_KEY='/etc/mysql/certs/client-key.pem',
+ MASTER_SSL_CA='/etc/mysql/certs/ca.pem',
+ MASTER_SSL_VERIFY_SERVER_CERT=0;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Zadnja linija nam sluzi da iskljucimo verifikaciju prema serverima pošto nismo uključili ime servera u CN pri pravljenju certifikata pa ga nece prepoznati.</p>
+</div>
+<div class="paragraph">
+<p>PS. treba i alter usera</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``ALTER USER 'maxscale'@'%' REQUIRE SSL;``</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_8_pmm_monitoring_i_dashboardi"><a class="anchor" href="#_3_8_pmm_monitoring_i_dashboardi"></a>3.8 PMM monitoring i dashboardi</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_mongodb_replika_set"><a class="anchor" href="#_4_mongodb_replika_set"></a>4. MongoDB replika set</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Prvo pisemo docker-compose.yaml file</p>
+</div>
+<div class="paragraph">
+<p>Pravimo foldere za conf fileove koje cemo mountati kroz yaml i dodajemo u njih sta nam treba -&#8594; mongo1.cnf mongo2.cnf mongo3.cnf (2 i 3 su isto kao 1)</p>
+</div>
+<div class="paragraph">
+<p>Pravimo foldere za datu koju cemo mountati kroz yaml -&#8594; data1_mongo data2_mongo data3_mongo (mkdir) // on ce i sam napraiviti foldere al nece imati permisije zato ih ja odmah napravim i dadnem permisije.</p>
+</div>
+<div class="paragraph">
+<p>Pravimo foldere za logove koje cemo mountati kroz yaml -&#8594; log1 log2 log3 (mkdir)</p>
+</div>
+<div class="paragraph">
+<p>Dajemo im permisije za pisanje i vlasništvo nad data i log folderima da to mongo instanca može i raditi iz dockera (chown, chmod) \ davao sam za chmod 777 da mi sigurno radi al u praksi ne treba tako</p>
+</div>
+<div class="paragraph">
+<p>Pošto smo u conf enable security moramo sada napraviti key file i mountati ga premo yaml file u kontenjer za svaki node /etc/mongodb-keyfile</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``openssl rand -base64 756 &gt; ./mongodb-keyfile``  \\ ne znam sada gdje ga drzimo ja sam ga ostavio u ovom folderu
+``chmod 0400 /etc/mongo-keyfile``  \\ moramo mu dati permisije samo za citanje inace ga mongo instanca nece prihvatiti
+``chown -R 999:999 /etc/mongo-keyfile``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sve dobro provjeriti i vidjeti u yaml file jesu li imena i fileovi dobro mountani \ posebno zbog čestih typo</p>
+</div>
+<div class="paragraph">
+<p>Pomoću docker-compose podignuti sve 3 instance(!obavezno jednu po jednu!)</p>
+</div>
+<div class="paragraph">
+<p>Spojiti se na jednu i inicializirati replica set:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> rs.initiate(
+ {
+ _id: "rs0",  // id replica seta
+ version: 1,
+ members: [
+          { _id: 0, host : "mongors1:27017" },
+          { _id: 1, host : "mongors2:27017" },
+          { _id: 2, host : "mongors3:27017" }         ] } )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Upotrijebiti admin database i dodati usera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">use admin
+db.createUser( { user: "admin", pwd: "ass", roles: [{ role: "root", db: "admin" }] })</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Opet se logirati i provjeriti status replica seta:</p>
+</div>
+<div class="paragraph">
+<p><code>rs.status()</code></p>
+</div>
+<div class="paragraph">
+<p>Automatsko mijenjanje primary nodea,upišemo na primarnom nodu:</p>
+</div>
+<div class="paragraph">
+<p><code>rs.stepDown(60)</code></p>
+</div>
+<div class="paragraph">
+<p>Manualno mijenjaje primary nodea,na primarnom nodu upišemo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">cfg = rs.conf()   // Trenutna konfiguracija replica seta
+cfg.members[2].priority = 2  //stavimo mu veci prioritet tako znamo da ce on biti izabran
+rs.reconfig(cfg)  // primjenjuje novu konfiguraciju
+rs.stepDown(60)  // automatski mu je 60 sekundi ali stavimo svakako</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sada ce replica izabrati node s _id 2 da bude primarni posto smo njemu dali veci prioritet.</p>
+</div>
+<div class="sect2">
+<h3 id="_3_1_dodavanje_hidden_noda_u_replika_set"><a class="anchor" href="#_3_1_dodavanje_hidden_noda_u_replika_set"></a>3.1 Dodavanje Hidden noda u replika set</h3>
+<div class="paragraph">
+<p>Hidden nam služi da radimo backupe ili analitiku preko njega da ne bi opterećivali ostale nodove.</p>
+</div>
+<div class="paragraph">
+<p>Prvo ga dodamo u docker-compose.yaml</p>
+</div>
+<div class="paragraph">
+<p>Napravimo i za njega mongoh.conf koji cemo mountati kroz yaml</p>
+</div>
+<div class="paragraph">
+<p>Napravimo foldere za datu i log fileove koje cemo mountati u yamlu s permisijama -&#8594; mongohidden_data loghidden \ dati permisije i vlasnistva</p>
+</div>
+<div class="paragraph">
+<p>I njemu moramo mountati key file(procedura opisana u prijasnjoj vježbi).</p>
+</div>
+<div class="paragraph">
+<p>Dignemo ga s docker-compose</p>
+</div>
+<div class="paragraph">
+<p>Spojimo se na primary instancu i pridružimo ga replika setu:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> rs.add({
+ host: "mongohidden:27017",  // njegova adresa
+ hidden: true,               // da je skriven
+ priority: 0,                // da ne moze biti izabran za primarnog
+ votes: 0,                   // da ne moze glasati
+ secondaryDelaySecs: 3600    // da pise podatke s zaostatkom od 1h, ako se slucajno pobrise nesto s primarnog da mozemo brze vratiti podatke
+ })</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Provjeriti status, njemu bi trebalo pisati <strong>hidden: true</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_2_dodavanje_arbiter_noda_u_replika_set"><a class="anchor" href="#_3_2_dodavanje_arbiter_noda_u_replika_set"></a>3.2 Dodavanje Arbiter noda u replika set</h3>
+<div class="paragraph">
+<p>Arbiter nam sluzi u slucaju parnog broja nodova da bude dodatni glas kojim se moze izabrati primarni (najčešći slučaj je 2 noda + arbiter)</p>
+</div>
+<div class="paragraph">
+<p>Prvo ga dodamo u docker-compose.yaml file.</p>
+</div>
+<div class="paragraph">
+<p>Njemu ne treba folder za datu, mozemo napraviti samo za logove -&#8594; logarbiter // i dati mu permisije i vlasnistva</p>
+</div>
+<div class="paragraph">
+<p>Napraviti i mongoarb.conf file za njega, mozemo komentirati sve vezano za podatke a ostaviti postavke za replikaciju, i mountati ga u yamlu.</p>
+</div>
+<div class="paragraph">
+<p>I njemu se mora mountati key file.</p>
+</div>
+<div class="paragraph">
+<p>Dizemo ga s docker-compose</p>
+</div>
+<div class="paragraph">
+<p>Pridruzimo ga replica setu s primarnog noda</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> rs.addArb({"mongoarb:27017"})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sada mozemo provjeriti stanje:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``rs.status()``</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_3_backup_s_mongodump"><a class="anchor" href="#_3_3_backup_s_mongodump"></a>3.3 Backup s mongodump</h3>
+<div class="paragraph">
+<p>Pravimo novi kontenjer 'mongobackup' s istom slikom kao i nodovi na kojima ce raditi backup -&#8594; docker-compose.yaml.</p>
+</div>
+<div class="paragraph">
+<p>Mountamo novi folder gdje cemo cuvati backupe -&#8594; backups.</p>
+</div>
+<div class="paragraph">
+<p>U enviromentu dodamo novog usera za pravljenje backupa.</p>
+</div>
+<div class="paragraph">
+<p>Dignemo novi kontenjer pomocu docker-compose i spojimo se na njega.</p>
+</div>
+<div class="paragraph">
+<p>Moramo napraviti usera i na replici setu da se može raditi backup, tako da se spojimo na primarnu instancu i kreiramo ga:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> db.createUser(
+ {
+ user: "BackupUser",
+ pwd: "123",
+ roles: [ { role: "backup", db: "admin" } ,
+         { role: "restore", db: "admin" } ]
+ }
+ )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Na bash liniji u kontenjeru za backup kucamo:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``mongodump --host=mongors2:27017 --username=BackupUser --password=123  --authenticationDatabase admin -readPreference=secondary --oplog --gzip --archive=/var/backups``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I imamo dump svih baza.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_4_restore_s_mongodump"><a class="anchor" href="#_3_4_restore_s_mongodump"></a>3.4 Restore s mongodump</h3>
+<div class="paragraph">
+<p>Prvo spustimo sva tri noda posto 'emo raditi "novi replica set"</p>
+</div>
+<div class="paragraph">
+<p>Pobrišemo svu datu iz sva tri noda.</p>
+</div>
+<div class="paragraph">
+<p>Dignemo jedan node i na njemu uradimo inicijalizciju i dodavanje usera.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> rs.initiate(
+ {
+ _id: "rs0",
+ members: [
+         { _id: 0, host : "mongors1:27017" } ] } )</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>use admin</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>db.createUser(
+{
+user: "BackupUser",
+pwd: "123", //
+roles: [ { role: "backup", db: "admin" } ,
+        { role: "restore", db: "admin" } ]
+}
+)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Iz kontenjera 'mongobackup' na bash liniji kucamo:</p>
+</div>
+<div class="paragraph">
+<p><code>mongorestore --archive=/var/backups/mongodump-2025-05-26.archive --gzip --host=mongors1:27017 -u BackupUser -p 123 --authenticationDatabase=admin</code></p>
+</div>
+<div class="paragraph">
+<p>Provjerimo jesu li podaci tu na prvom nodu al prvo se logiramo sa nasim userom.</p>
+</div>
+<div class="paragraph">
+<p><code>show dbs</code></p>
+</div>
+<div class="paragraph">
+<p>Ako jesu dižemo i druga dva noda s docker-compose.</p>
+</div>
+<div class="paragraph">
+<p>I dodajemo ih u replika set.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> rs.add('mongors2:27017')
+ rs.add('mongors3:27017')</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Sada bi trebali imati sve podatke opet.</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_5_restore_pitr"><a class="anchor" href="#_3_5_restore_pitr"></a>3.5 Restore PITR</h3>
+<div class="paragraph">
+<p>Scenario: U bazi smo napravili danas neku novu kolekciju i još nešto radili, i sad slučajno pobrišemo neku staru kolekciju jer je bila sličnog imena.</p>
+</div>
+<div class="paragraph">
+<p>Moramo imati backup s oplogom i on mora sadržavati zajedničku točku s novim oplogom,tj. scoop oploga mora uhvatiti i backupov.</p>
+</div>
+<div class="paragraph">
+<p>Uradimo dump oploga iz backup kontenjera:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``mongodump --host=mongors2:27017 --username=BackupUser --password=123   --authenticationDatabase admin -d local -c oplog.rs -o oplogD``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Premjestimo oplog u novi direktorij:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``mv oplogD/local/oplog.rs.bson oplogR/oplog.bson``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sada mozemo procitati oplog file pomocu bsondump ili naći u bazi ako još imamo timestamp kada je dropana kolekcija.</p>
+</div>
+<div class="paragraph">
+<p>Pošto u mene jos je živa mongo instanca provjeravam pomoću:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb"> db.oplog.rs.find({
+ "op": "c",
+ "o.drop": { "$exists": true } // Provjerava da li postoji polje 'drop' unutar 'o' objekta
+ }).sort({
+ "ts": -1 // Sortiraj po timestampu (najnoviji prvi)
+ })</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nalazim timestamp <strong>1749562420, i: 1</strong></p>
+</div>
+<div class="paragraph">
+<p>Sada opet radimo zadnji restore backupa koji imamo i sav proces restorea.</p>
+</div>
+<div class="paragraph">
+<p>Onda radimo restore iz oploga:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``mongorestore --host=mongors1:27017 -u BackupUser -p 123 --authenticationDatabase=admin --oplogReplay --oplogLimit 1749562420:1 oplogR``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Trebali bi sada imati vraćenu kolekciju.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_6_skriptirani_backup"><a class="anchor" href="#_3_6_skriptirani_backup"></a>3.6 Skriptirani backup</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_3_7_upgrade_na_novu_verziju_mongodb_instance_u_replika_setu"><a class="anchor" href="#_3_7_upgrade_na_novu_verziju_mongodb_instance_u_replika_setu"></a>3.7 Upgrade na novu verziju mongodb instance u replika setu.</h3>
+<div class="paragraph">
+<p>Pogledamo status replica seta jel sve zdravo.</p>
+</div>
+<div class="paragraph">
+<p>Odradimo backup za svakii slučaj.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Upoznamo se s novim featursima u novoj verziji pogotovo s compatibilty changes.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Svi u setu moraju imati featureCompabilityversion istu, a da to provjerimo ukucamo na svakom:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Svi nodovi moraju biti u zdravom stanju a da to provjerimo:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.adminCommand( { replSetGetStatus: 1 } )``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Kad smo odradili pripreme mozemo poceti s nadogradnjom, prvo spustimo jedan sekundarni:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.adminCommand( { shutdown: 1 } )``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dodamo u yaml file novi image i pokrenemo novu instancu, trebala bi se automatski dodati u replica set.</p>
+</div>
+<div class="paragraph">
+<p>Ponovimo istu komandu za provjeru statusa i obavezno pregledati logove da se synca uredno.</p>
+</div>
+<div class="paragraph">
+<p>Ovdje valja dodati da vidis da slucajno neki node nema drift ili kasnjenje u replikaciji:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.printSecondaryReplicationInfo()``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Isto uradimo i s drugim nodom</p>
+</div>
+<div class="paragraph">
+<p>Kad dodjemo do primaryu njega moram stepDown da odstupi s te pozicije da bi i njega mogli spustiti kao secundary:</p>
+</div>
+<div class="paragraph">
+<p><code>rs.stepDown(60)</code></p>
+</div>
+<div class="paragraph">
+<p>I njemu radimo isti korak upgradea</p>
+</div>
+<div class="paragraph">
+<p>Kad je sve gotovo spojimo se na primary gdje cemo potvrditi da smo sigurni da krecemo s novim featursima pomocu(u realnom vremenu pricekamo par dana da vidimo da necemo ici downgrade verzije posto poslije ovoga jedini je downgrade da zovemo direkt u mongo):</p>
+</div>
+<div class="paragraph">
+<p><code>db.adminCommand( { setFeatureCompatibilityVersion: "7.0" } )</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_8_indexi_u_mongodb"><a class="anchor" href="#_3_8_indexi_u_mongodb"></a>3.8 Indexi u mongodb</h3>
+<div class="literalblock">
+<div class="content">
+<pre>``db.kolekcija.getIndexes()``  # da vidimo indexe koje ima kolekcija</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Defaultno imamo index na polju _id.</p>
+</div>
+<div class="paragraph">
+<p><strong>Single field</strong> index:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.test.createIndex ({ age: 1 }) `` # ako je 1 asc a ako je -1 onda je kreiran kao descending</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>age_1 # index dobije unique ime ako mu mi to ne definiramo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mozemo koristiti komandu explain('executionStats' za detaljniji uvid) da vidimo da li query koristi index scan ili collection scan</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.test.find({ age: { $gt: 30 } }).explain()``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Compound</strong> index:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.test.createIndex ({name: 1, age: 1})``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compound index moze biti puno efektivniji od single field indexa, jos ne moramo imati vise indexa nego samo jedan. Redoslijed s ljeva na desno je vazan da bi index bio efektivniji i pokrio query.A definiramo ga pomocu ESR (Equality, Sort, Range).</p>
+</div>
+<div class="paragraph">
+<p>Postoje još:</p>
+</div>
+<div class="paragraph">
+<p>MultiKey index:</p>
+</div>
+<div class="paragraph">
+<p>Indexi koji se kreiraju na polju koje ima niz.</p>
+</div>
+<div class="paragraph">
+<p>Hashed index:</p>
+</div>
+<div class="paragraph">
+<p>Pomazu nam pri shardiranju podataka na vise servera.</p>
+</div>
+<div class="paragraph">
+<p>Postoje jos text indexi , geospatial&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Opcije koje mozemo primijeniti na postojece indexe "unique", "sparse", "TTL"&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_9_hvatanje_slow_queria"><a class="anchor" href="#_3_9_hvatanje_slow_queria"></a>3.9 Hvatanje SLOW QUERIA</h3>
+<div class="literalblock">
+<div class="content">
+<pre>``db.getProfilingStatus()``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>0 - ne hvata nikakvu datu</p>
+</div>
+<div class="paragraph">
+<p>1 - hvata samo operacije koje prelaze slowms: 100 (stavljeno po defaultu)</p>
+</div>
+<div class="paragraph">
+<p>2 - hvata sve operacije (nije preporucljivo, defaultna velicina 1MB)</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>``db.setProfilingLevel(1)``</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Stvara se nova kolekcija system.profile i na njoj mozemo izvrsavati upite.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>`` db.system.profile.find()``</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_10_logovi_mongodb"><a class="anchor" href="#_3_10_logovi_mongodb"></a>3.10 Logovi Mongodb</h3>
+<div class="paragraph">
+<p>Understand MongoDB log messages
+Now let&#8217;s take a closer look at the log messages. Each log entry is a JSON object with the following fields:</p>
+</div>
+<div class="paragraph">
+<p>"t": Records the timestamp of the log message in ISO-8601 format.
+"s": The severity level of the log message.
+"c": Specifies the component this log record belongs to.
+"id": A unique identifier.
+"ctx": Context information.
+"msg": The message body.
+"attr": Include additional information such as client data, file path, line number, etc.
+"tags": Optional tags.
+"truncated": Contains truncation information if the message is truncated.
+"size": The original size of the entry before truncation.</p>
+</div>
+<div class="paragraph">
+<p>MongoDB provides the following verbosity levels:</p>
+</div>
+<div class="paragraph">
+<p>"F": Fatal messages.
+"E": Error messages.
+"W": Warning messages.
+"I": Informational messages. Corresponds to numeric value 0.
+"D1"-"D5": Debug messages, Corresponds to numeric value 1-5.</p>
+</div>
+<div class="paragraph">
+<p>-Logove mozemo lakse citati sa jq toolom</p>
+</div>
+<div class="paragraph">
+<p><code>sudo cat mongod.log | jq</code></p>
+</div>
+<div class="paragraph">
+<p>-U <strong>/etc/logrotate.d/</strong> */ napravimo skriptu(nazovemo je mongodb) za rotiranje logova</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">/home/tonia/DockerMongoRS/log1/mongod.log {
+daily               # jednom dnevno radi rotaciju ako hocemo neko drugo vrijeme osim(daily, weekly, monthly,yearly) pravimo novi cron job
+size 100m           # ili je file veci od 100 MB a provjerava se jednom dnevno
+rotate 7            # cuva maksimalno 7 log fileova
+missingok           # ako log ne postoji ok je
+notifempty          # nece praviti novi ako je stari log prazan
+compress            # raditi ce kompresiju loga
+delaycompress       # nece raditi kompresiju "predzadnjeg loga"
+create 0644 999 999 # kreira novi log s ovim dozvolama i permisijama
+sharedscripts       # skriptu ce okinuti samo jednom (valja kad ima vise log fileova u jednom folderu
+postrotate          # pocetak skripte
+  docker exec mongors1 mongosh -u admin -p ass --eval 'db.adminCommand({logRotate: 1})' &gt;/dev/null 2&gt;&amp;1  # sadrzaj skripte
+endscript      # kraj skripte
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>-Pomocu  mozemo forsirati izvodjenje skripte da testiramo:</p>
+</div>
+<div class="paragraph">
+<p><code>sudo logrotate -f /etc/logrotate.d/mongodb</code></p>
+</div>
+<div class="paragraph">
+<p>-Sad ovo uradimo i sa ostala 2 noda</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_0_kubernetes_pxc_operator"><a class="anchor" href="#_4_0_kubernetes_pxc_operator"></a>4.0 Kubernetes PXC Operator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Da se pridružimo novom clusteru moramo ga dodati u kube config. Skinemo yaml file od clustera i dodamo ga:</p>
+</div>
+<div class="paragraph">
+<p><code>KUBECONFIG=~/.kube/config:/home/tonia/Downloads/ime-clustera.yaml kubectl config view --flatten &gt; ~/.kube/config-merged &amp;&amp; mv ~/.kube/config-merged ~/.kube/config</code></p>
+</div>
+<div class="paragraph">
+<p>Na njega se možemo prebaciti pomoću kubectx ili komande:</p>
+</div>
+<div class="paragraph">
+<p>``kubectl config use-context "ime-clustera"</p>
+</div>
+<div class="sect2">
+<h3 id="_4_1_kubectl_deploy"><a class="anchor" href="#_4_1_kubectl_deploy"></a>4.1 Kubectl deploy</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html">Tutorial</a></p>
+</li>
+<li>
+<p><a href="https://github.com/percona/percona-xtradb-cluster-operator">Yaml fileovi</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Deploying a Percona XtraDB Cluster</p>
+</div>
+<div class="paragraph">
+<p>Added a new cluster to my kubeconfig file using the following commands:</p>
+</div>
+<div class="paragraph">
+<p><code>KUBECONFIG=~/.kube/config:/home/tonia/Downloads/staging-ubercluster-rke2.yaml kubectl config view --flatten &gt; ~/.kube/config-merged &amp;&amp; mv ~/.kube/config-merged ~/.kube/config</code></p>
+</div>
+<div class="paragraph">
+<p>Then switched to the new cluster&#8217;s context:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl config use-context "staging-ubercluster-rke2"</code></p>
+</div>
+<div class="paragraph">
+<p>Deployed the Percona XtraDB Cluster Operator:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl apply --server-side -f <a href="https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/refs/heads/main/deploy/operator.yaml" class="bare">https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/refs/heads/main/deploy/operator.yaml</a> -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>Deployed the cluster without HAProxy first:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl apply -f pxc-ha.yaml -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>Edited pxc-ha.yaml and deployed HAProxy as well:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl apply -f pxc-ha.yaml -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>Get acces to databases:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get secret pxc-db-secrets -n dba-pxc-test -o jsonpath='{.data.root}' | base64 --decode</code></p>
+</div>
+<div class="paragraph">
+<p>Tested port forwarding to the cluster:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl port-forward pxc-db-haproxy-0 3306:3306 -n dba-pxc-test</code>        * error, use service/nameofservice dont use pod name</p>
+</div>
+<div class="paragraph">
+<p>This also worked on port 3307.</p>
+</div>
+<div class="paragraph">
+<p>Cleanup and Troubleshooting</p>
+</div>
+<div class="paragraph">
+<p>Eventually deleted everything by following the provided instructions.</p>
+</div>
+<div class="paragraph">
+<p>PerconaPercona Operator for MySQL - Delete the Operator</p>
+</div>
+<div class="paragraph">
+<p>Ran into an issue where an old cluster was stuck and couldn&#8217;t be deleted. I had to manually edit its YAML file and remove the finalizers to force its deletion.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl edit pxc cluster1 -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>A similar problem happened with one of the certificates, which kept reappearing.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_2_helm_deploy"><a class="anchor" href="#_4_2_helm_deploy"></a>4.2 Helm deploy</h3>
+<div class="paragraph">
+<p><code>mkdir KubernetesHelm</code></p>
+</div>
+<div class="paragraph">
+<p><code>cd KubernetesHelm</code></p>
+</div>
+<div class="paragraph">
+<p><code>helm repo add percona <a href="https://percona.github.io/percona-helm-charts/" class="bare">https://percona.github.io/percona-helm-charts/</a></code></p>
+</div>
+<div class="paragraph">
+<p><code>helm repo update</code></p>
+</div>
+<div class="paragraph">
+<p><code>helm pull percona/pxc-operator --version 1.16.1</code></p>
+</div>
+<div class="paragraph">
+<p><code>helm pull percona/pxc-db --version 1.16.1</code></p>
+</div>
+<div class="paragraph">
+<p>edited <strong>values.yaml</strong> for both</p>
+</div>
+<div class="paragraph">
+<p>From pxc-operator folder:</p>
+</div>
+<div class="paragraph">
+<p><code>helm install pxc-operator . -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>(didnt work because cant install crds, jj helped and bring it up)</p>
+</div>
+<div class="paragraph">
+<p>From pxc-db folder:</p>
+</div>
+<div class="paragraph">
+<p><code>helm install pxc-db . -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>Port forward worked</p>
+</div>
+<div class="paragraph">
+<p>Cleanup again, now with helm:</p>
+</div>
+<div class="paragraph">
+<p><code>helm uninstall pxc-db -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p><code>helm uninstall pxc-operator -n dba-pxc-test</code></p>
+</div>
+<div class="paragraph">
+<p>and deleted pvcs and secrets with kubectl.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
