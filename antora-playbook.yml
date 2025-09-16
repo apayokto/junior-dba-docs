@@ -9,6 +9,6 @@ content:
     branches: HEAD
 ui:
   bundle:
-    url: ./ui-bundle
+    url: ./docs/ui-bundle
 output:
   dir: ./docs
