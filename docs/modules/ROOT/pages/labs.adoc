@@ -602,7 +602,7 @@ Create Table: CREATE TABLE `arhiva_sbtest5` (
 1 row in set (0.001 sec)
 ----
 
-=== 2.6 Indexi u MySQLu
+=== 2.5 Indexi u MySQLu
 
 
 
