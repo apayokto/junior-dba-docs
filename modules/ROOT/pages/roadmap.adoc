@@ -124,13 +124,16 @@ Imajte na umu: *Službena dokumentacija je najvažniji i najrelevantniji izvor i
 
 * link:https://github.com/olafz/percona-clustercheck[Percona Cluster Check]
 
-* link:
+* link:https://sematext.com/blog/haproxy-logs/[O logovima]
 
 
 == Kubernetes
 
 .PerconaOperator
 * link:https://docs.percona.com/percona-operator-for-mysql/pxc/index.html[Percona Operator]
+
+.Alati
+* link:https://github.com/ahmetb/kubectx[Kubectx]
 
 
 

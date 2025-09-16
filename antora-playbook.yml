@@ -1,6 +1,7 @@
 site:
   title: Sportradar Nsoft Junior DBA Tutorials
   start_page: junior-dba-docs::index.adoc
+  url: https://github.com/apayokto/junior-dba-docs
 content:
   sources:
   - url: .

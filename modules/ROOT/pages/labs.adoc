@@ -41,7 +41,7 @@ sudo chown -R 1001:1001 master_data
 Zatim kreirajte file **docker-compose.yaml** unutar tog foldera. Dodajte sljedeći sadržaj za definiranje servisa:
 
 [source, yaml]
-
+----
 services:
   master:              # definiramo prvi kontenjer
     image: mysql:8.0  # vucemo image s docker huba s tagom 8.0
@@ -67,12 +67,14 @@ services:
       MYSQL_ROOT_PASSWORD: 4321
     depends_on:                  # da se ne pokrece ako master nije pokrenut
       -  master
-
+----
 
 TIP: Vrste link:https://docs.docker.com/engine/storage/bind-mounts/[volumena] u dockeru.
 
 Spajamo se na master server(``docker exec -it master bash``) i pravimo usera s grantovima potrebnim za replikaciju:
+
 [source, mysql]
+----
 mysql> CREATE USER 'replica_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 Query OK, 0 rows affected (0.02 sec)
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'replica_user'@'%';
@@ -91,11 +93,12 @@ Kopiramo backup iz master kontenjera u slave.
 Uradimo restore i provjerimo jesu li podaci tu.
 
 mysql -u root -p < backup.sql
-
+----
 
 Spojimo se na mastera opet i nađemo poziciju binlogova:
 
 [source, mysql]
+----
 mysql> show master status\G
 *************************** 1. row ***************************
              File: mysql-bin.000012
@@ -111,8 +114,10 @@ CHANGE MASTER TO
   MASTER_PASSWORD = 'password',
   MASTER_LOG_FILE = 'mysql-bin.000012',
   MASTER_LOG_POS = 2400;
+----
 
 [source, mysql]
+----
 mysql> start slave;
 Query OK, 0 rows affected, 1 warning (0.05 sec)
 mysql> show slave status\G
@@ -129,7 +134,7 @@ mysql> show slave status\G
         Relay_Master_Log_File: mysql-bin.000009
              Slave_IO_Running: Yes
             Slave_SQL_Running: Yes...
-
+----
 
 U outputu za slave status vidimo da oba threada rade.
 Možemo testirati da ubacimo nešto podataka na master i vidimo hoće li se replicirali na slavea.
@@ -219,11 +224,11 @@ Kada se bootstrapa, jedan čvor (node) se pokreće kao "izvor istine". On je pri
 
 grastate.dat je datoteka koju Galera koristi za pohranu informacija o stanju čvora. Galera prati tri ključna podatka:
 
-UUID (Unique Universal ID): Jedinstveni identifikator klastera.
+*UUID* (Unique Universal ID): Jedinstveni identifikator klastera.
 
-Seqno (Sequence Number): Redni broj zadnje transakcije koju je taj čvor primio.
+*Seqno* (Sequence Number): Redni broj zadnje transakcije koju je taj čvor primio.
 
-safe_to_bootstrap: 0 znači da ovaj čvor nije siguran za pokretanje novog klastera. 1 znači da se može bootsrapati s ovog nodea.
+*safe_to_bootstrap*: 0 znači da ovaj čvor nije siguran za pokretanje novog klastera. 1 znači da se može bootsrapati s ovog nodea.
 
 Galera koristi ove informacije pri pokretanju čvora da bi odlučila što treba učiniti.
 
@@ -238,23 +243,26 @@ Ako se razlikuje, on ulazi u proces State Snapshot Transfer (SST). To je proces 
 U docker-compose.yaml dodati servis za sysbench:
 
 [source, yaml]
+----
 tools:
     image: debian:12
     container_name: sysbenchtool2
     command: >
       bash -c "apt-get update && apt-get install -y sysbench && sleep infinity"
+----
 
 Na jednom nodu pravimo usera i bazu za testiranje:
 
 [source, sql]
+----
 mysql> CREATE USER 'sbtest'@'%' IDENTIFIED BY 'pamet';
        GRANT ALL ON sbtest.* TO 'sbtest'@'%';
        CREATE SCHEMA sbtest;
-
+----
 
 Dignemo servis tools sa sysbenchom i počnemo testiranje:
 
-[source, linux]
+[source, bash]
 ----
 sysbench /usr/share/sysbench/oltp_write_only.lua --mysql-host=node1 --mysql-port=3306 --mysql-user=sbtest --mysql-password=pamet --mysql-db=sbtest --table_size=100000 --tables=10 --threads=25 --histogram=on --time=30 prepare
 
@@ -270,6 +278,7 @@ Prepare unosi podatke u tablice, run odrađiva transakcije a cleanup čisti sve 
 Dodamo servis u docker-compose.yaml za asinkroni node:
 
 [source, yaml]
+----
   areplica:
     image: percona/percona-xtradb-cluster:8.0.41
     container_name: areplica
@@ -284,6 +293,7 @@ Dodamo servis u docker-compose.yaml za asinkroni node:
       -  ./logar:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 4GwihtremRDcQF
+----
 
 U konfiguracijski file za asinkroni node stavimo:
 
@@ -371,6 +381,7 @@ START REPLICA;``
 U postojeći setup u docker-compose.yaml dodajemo image za haproxy:
 
 [source, yaml]
+----
 haproxy:
     container_name: haproxy
     image: haproxy:3.2
@@ -386,6 +397,7 @@ haproxy:
         options:
             max-size: "10m"
             max-file: "3"
+----
 
 I pravimo cfg file na gore pomenutoj lokaciji gdje ubacivamo:
 
@@ -435,7 +447,7 @@ backend mysql_backend_read
     server node1 node1:3306 check inter 2s rise 2 fall 3 weight 1 backup
     server node2 node2:3306 check inter 2s rise 2 fall 3 weight 1 
     server node3 node3:3306 check inter 2s rise 2 fall 3 weight 1
-  
+
 ----
 
 TIP: Ako se konfiguracija piše u VSCodeu može se desiti da ne prođe jer zadnji red treba biti prazan da zna kada je kraj konfiguracije, pa pomoću nekog drugog txt editora dodamo prazan zadnji red pošto to ne očita u VSCodeu.
@@ -449,10 +461,12 @@ Može se sa sysbench alatom testirati radi li.
 
 Prvo ubacimo sliku percona tool kita u yaml file:
 [source, yaml]
+----
 perconatool:
     image: perconalab/percona-toolkit:latest
     container_name: ptoolkit
     command: tail -F /dev/null   # s ovom komandom kontenjer stalno ostaje živ da mi možemo vježbati i istraživati
+----
 
 
 *pt-archiver*
@@ -467,6 +481,7 @@ Na source serveru kucamo:
 Na destination serveru pravimo bazu naziva **arhiva** i kopiramo create table što smo dobili iz prošle komande.
 
 [source, mysql]
+----
 MariaDB [arhiva]> CREATE TABLE `arhiva_sbtest5` (
     ->   `id` int NOT NULL AUTO_INCREMENT,
     ->   `k` int NOT NULL DEFAULT '0',
@@ -476,15 +491,19 @@ MariaDB [arhiva]> CREATE TABLE `arhiva_sbtest5` (
     ->   KEY `k_5` (`k`)
     -> ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 Query OK, 0 rows affected (0.030 sec)
+----
 
 Na source smo provjerili i koliko imamo tih podataka da možemo potvrditi prebacivanje.
+
 [source, mysql]
+----
 mysql> SELECT COUNT(*) FROM sbtest5 WHERE id < 2000;
 +----------+
 | COUNT(*) |
 +----------+
 |      667 |
 +----------+
+----
 
 Ulazimo u kontenjer gdje nam se nalazi percona tool kit i istraživamo koje nam sve opcije trebaju da prebacimo podatke.
 
@@ -493,6 +512,7 @@ Ulazimo u kontenjer gdje nam se nalazi percona tool kit i istraživamo koje nam 
 TIP: Uvijek prvo probamo s dry run, gdje će komanda proći sve korake ali neće izvršiti komandu.
 
 [source, bash]
+----
 pt-archiver \
     --source 'h=node1,u=root,p=4GwihtremRDcQF,P=3306,D=sbtest,t=sbtest5' \
     --where 'id < 2000' \
@@ -502,8 +522,10 @@ pt-archiver \
     --no-check-columns \
     --retries=5 \
     --sleep=1
+----
 
 [source, mysql]
+----
 Started at 2025-09-12T10:21:45, ended at 2025-09-12T10:22:11
 Source: D=sbtest,P=3306,h=node1,p=...,t=sbtest5,u=root
 Dest:   D=arhiva,P=3306,h=172.22.0.2,p=...,t=arhiva_sbtest5,u=root
@@ -517,15 +539,19 @@ deleting         667     0.3710       1.38
 inserting        667     0.3458       1.28
 select            24     0.0322       0.12
 other              0     0.1581       0.59
+----
 
 Možemo ući u mariadb da vidimo jesu tu podaci.
+
 [source, mysql]
+----
 MariaDB [arhiva]> select count(*) from arhiva_sbtest5;
 +----------+
 | count(*) |
 +----------+
 |      667 |
 +----------+
+----
 
 *pt-online-schema-change*
 
@@ -560,6 +586,7 @@ pt-online-schema-change \
 Nakon što se uvjeriš da je dry-run prošao bez greške, možeš pokrenuti pravu promjenu. Jednostavno ukloni --dry-run i dodaj opciju --execute.
 
 [source, mysql]
+----
 MariaDB [arhiva]> show create table arhiva_sbtest5\G
 *************************** 1. row ***************************
        Table: arhiva_sbtest5
@@ -573,10 +600,12 @@ Create Table: CREATE TABLE `arhiva_sbtest5` (
   KEY `k_5` (`k`)
 ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 1 row in set (0.001 sec)
-
-=== 2.5 Dodavanje arbiter noda u cluster
+----
 
 === 2.6 Indexi u MySQLu
+
+
+
 
 
 == 3. MariaDB sinkrona replikacija
@@ -595,6 +624,7 @@ Iako se može činiti kao dodatni korak, korištenje zasebnog kontejnera za back
 
 Dignemo backup kontenjer, a yaml za njega smo stavili:
 [source, yaml]
+----
 mariabackup:   # pravimo servis za backup
     image: mariadb:11.4   # vucem citav image mariadb posto ce imati toolse, a nisam mogao naci sliku samo s toolsima 
     container_name: mariabackup   # dajemo ime kontenjeru
@@ -607,6 +637,7 @@ mariabackup:   # pravimo servis za backup
       -  ./maria2_datanew:/var/lib/mysql:ro
       -  ./backups2:/var/backups
     command: ["sleep", "infinity"]   # kazem kontenjeru ako mu se ukine glavni proces(mariadb) da ipak ostane u njemu
+----
 
 Napravimo na nekom nodu usera za backup s potrebnim minimalnim privilegijama:
 
@@ -694,19 +725,261 @@ Dizemo node2 s novim izvorom istine i spajamo druga dva noda.
 
 === 3.3 Mariadb logički backup s Mydumperom
 
-=== 3.4 Mariadb PITR(Point in time restore) proces
 
+
+=== 3.4 Mariadb PITR(Point in time restore) proces
 
 === 3.5 Vježbanje skripti za backupe
 
-
 === 3.6 Postavljanje Maxscale proxya ispred clustera
 
-=== 3.7 Dodavanje asinkronog nodea clusteru gdje konekcija ide preko maxscalea
+U docker-compose.yaml dodajemo image od maxscalea:
 
-=== 3.8 Dodavanje i proučavanje TLS certifikata za MariaDB instance
+[source, yaml]
+----
+maxscale:
+    image: mariadb/maxscale:24.02
+    container_name: maxscale
+    deploy:
+      resources:                       
+        limits:
+          cpus: '2'
+          memory: 4G
+    volumes:                                            
+      -  ./config/maxscale.cnf:/etc/maxscale.cnf
+      -  ./logmax:/var/log/maxscale
+      -  ./maxdata:/var/lib/maxscale
+----
 
-=== 3.9 PMM monitoring i dashboardi
+U cnf file ./config/maxscale.cnf ubacujemo:
+
+[source, cfg]
+----
+[maxscale]
+threads=2
+log_augmentation=1
+ms_timestamp=1
+logdir=/var/log/maxscale
+
+[server1]
+type=server
+address=mariam1
+port=3306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=mariam2
+port=3306
+protocol=MariaDBBackend
+
+[server3]             
+type=server
+address=mariam3
+port=3306
+protocol=MariaDBBackend
+
+[ar_server]
+type=server
+address=amariam4
+port=3306
+protocol=MariaDBBackend
+
+[Galera-Monitor]
+type=monitor
+module=galeramon
+servers=server1,server2,server3
+user=maxscale
+password=rNtOdlAg30SkaF
+monitor_interval=2000ms
+
+[Async-Slave-Monitor]
+type=monitor
+module=mariadbmon
+servers=ar_server
+user=maxscale
+password=rNtOdlAg30SkaF
+monitor_interval=2000ms
+
+[Read-Write-Service]
+type=service
+router=readwritesplit
+servers=server1,server2,server3
+user=maxscale
+password=rNtOdlAg30SkaF
+master_failure_mode=fail_on_write
+connection_keepalive=300s          
+
+[Read-Write-Listener]
+type=listener
+service=Read-Write-Service
+protocol=MariaDBClient
+port=4306
+
+[RO-Service]
+type=service
+router=readconnroute
+servers=server1,server2,server3
+router_options=slave
+user=maxscale
+password=rNtOdlAg30SkaF
+
+[RO-Listener]
+type=listener
+service=RO-Service
+protocol=MariaDBClient
+port=4010
+----
+
+Ova MaxScale konfiguracija je postavljena da upravlja prometom u klasteru baze podataka i usmjerava upite na odgovarajuće servere.
+
+Globalne postavke za maxscale
+Ovo su osnovne globalne postavke, kao što su broj niti (threads=2) i lokacija logova (logdir=/var/log/maxscale).
+
+Serveri
+Definira četiri fizička servera baze podataka (mariam1, mariam2, mariam3, amariam4) s njihovim adresama i portovima.
+
+Monitori
+Dva monitora prate status i topologiju servera.
+
+Galera-Monitor prati Galera klaster (serveri 1-3).
+
+Async-Slave-Monitor prati asinhronu repliku (ar_server).
+
+Servisi
+Ovo su logike za usmjeravanje prometa.
+
+Read-Write-Service koristi readwritesplit ruter. On automatski razdvaja upite za čitanje od upita za pisanje i šalje ih na odgovarajuće servere (master/slave).
+
+RO-Service koristi readconnroute ruter s opcijom slave. Ovaj servis je namijenjen isključivo za upite za čitanje, koje usmjerava samo na slave servere radi balansiranja opterećenja.
+
+Listeneri
+Listeneri su ulazne tačke za klijente.
+
+Read-Write-Listener na portu 4306 usmjerava promet na Read-Write-Service.
+
+RO-Listener na portu 4010 usmjerava promet na RO-Service, omogućavajući samo operacije čitanja.
+
+Ukratko, konfiguracija pruža dva različita načina pristupa klasteru: jedan s punim pravima (čitanje/pisanje) i jedan isključivo za čitanje.
+
+Na jednom nodu pravimo usera za maxscale da ima pristup:
+
+[source, mysql]
+----
+CREATE USER 'maxscale'@'%' IDENTIFIED BY 'rNtOdlAg30SkaF';
+ GRANT SELECT ON mysql.user TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.db TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.tables_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.columns_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.procs_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.proxies_priv TO 'maxscale'@'%';
+ GRANT SELECT ON mysql.roles_mapping TO 'maxscale'@'%';
+ GRANT SHOW DATABASES ON *.* TO 'maxscale'@'%';
+ GRANT RELOAD ON *.* TO 'maxscale'@'%';
+ GRANT PROCESS ON *.* TO 'maxscale'@'%';
+ GRANT SLAVE MONITOR ON *.* TO 'maxscale'@'%';
+ GRANT REPLICATION CLIENT ON *.* TO 'maxscale'@'%';
+ GRANT REPLICATION SLAVE ON *.* TO 'maxscale'@'%';
+ FLUSH PRIVILEGES;
+----
+
+Dižemo maxscale, ulazimo u kontenjer i tu možemo vidjeti servere s komandom:
+
+``maxctrl list servers``
+
+Već spojenu asinkronu repliku koja ide preko GTID možemo joj sad prebaciti konekciju da ide preko maxscale i to RO-Listenera.
+Na asinkronoj replici kucamo:
+
+[source, mysql]
+----
+stop slave;
+CHANGE MASTER TO 
+ MASTER_HOST='maxscale', 
+ MASTER_PORT=4010, 
+ MASTER_USER='maxscale', 
+ MASTER_PASSWORD='rNtOdlAg30SkaF',
+ MASTER_USE_GTID=slave_pos,
+ MASTER_SSL=0;
+start slave;
+----
+
+[source, mysql]
+----
+MariaDB [(none)]> show slave status\G
+*************************** 1. row ***************************
+                Slave_IO_State: Waiting for master to send event
+                   Master_Host: maxscale
+                   Master_User: maxscale
+                   Master_Port: 4010
+                 Connect_Retry: 60
+               Master_Log_File: master-bin.000045
+           Read_Master_Log_Pos: 359
+                Relay_Log_File: mysql-relay-bin.000002
+                 Relay_Log_Pos: 659
+         Relay_Master_Log_File: master-bin.000045
+              Slave_IO_Running: Yes
+             Slave_SQL_Running: Yes
+----
+
+=== 3.7 Dodavanje i proučavanje TLS certifikata za MariaDB instance
+
+Kreiramo direktorij gdje cemo cuvati certifikate
+
+ ``mkdir certs``
+
+Uđemo u taj direktorij i kreiramo certifikate:
+
+[source, bash]
+----
+ openssl genrsa 2048 > ca-key.pem
+
+ openssl req -new -x509 -nodes -days 3650 -key ca-key.pem -out ca.pem -subj "/CN=MyMariaDBClusterCA/O=MyOrg/C=BA"
+
+ openssl req -newkey rsa:2048 -days 3650 -nodes -keyout server-key.pem -out server-req.pem -subj "/CN=server.mycluster.local/O=MyOrg/C=BA"
+
+ openssl x509 -req -in server-req.pem -days 3650 -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out server-cert.pem
+
+ openssl req -newkey rsa:2048 -days 3650 -nodes -keyout client-key.pem -out client-req.pem -subj "/CN=client.mycluster.local/O=MyOrg/C=BA"
+
+ openssl x509 -req -in client-req.pem -days 3650 -CA ca.pem -CAkey ca-key.pem -set_serial 02 -out client-cert.pem
+
+ rm *-req.pem  
+----
+
+Dobijemo 6 fileova, od kojih ca key je kljuc kojim pravimo ca.pem koji nam sluzi za opečatiti ostale certifikate kao npr serverskih i klijentskih.
+
+Zbog jednostavnosti vježbe kopirali smo ih u jos jedan folder i jednome smo folderu dali permisije od mariadb a drugom od maxscalea.
+
+Onda smo ih mountali u kontenjere s opcijom read only, maria u maria , max u max.
+
+Prvo smo ih ubacili u nodove od galera clustera da se enkriptira promet izmedju replika. Galerin interni SSL nam kaze da mozemo staviti server certifikate da ne treba client.
+
+Onda serverske certifikate stavljamo na svaki node a klijentske u cnf maxscale ispod svakog definiranog servera. Da pokrijemo komunikaciju izmedju maxscalea i naseg galera clustera.
+
+Iduci korak je da serverske certifikate stavljamo na maxscale listenere da pokrijemo veze koje se spajaju na njih. Npr. kao veza asinkrone replikacije i maxscalea koju onda moramo uspostaviti sa:
+
+[source, mysql]
+----
+ CHANGE MASTER TO 
+ MASTER_HOST='maxscale', 
+ MASTER_PORT=4010, 
+ MASTER_USER='maxscale', 
+ MASTER_PASSWORD='rNtOdlAg30SkaF',
+ MASTER_USE_GTID=slave_pos;
+ MASTER_SSL=1,
+ MASTER_SSL_CERT='/etc/mysql/certs/client-cert.pem',
+ MASTER_SSL_KEY='/etc/mysql/certs/client-key.pem',
+ MASTER_SSL_CA='/etc/mysql/certs/ca.pem',
+ MASTER_SSL_VERIFY_SERVER_CERT=0;
+----
+
+Zadnja linija nam sluzi da iskljucimo verifikaciju prema serverima pošto nismo uključili ime servera u CN pri pravljenju certifikata pa ga nece prepoznati.
+
+PS. treba i alter usera
+
+ ``ALTER USER 'maxscale'@'%' REQUIRE SSL;``
+
+=== 3.8 PMM monitoring i dashboardi
 
 == 4. MongoDB replika set
 
@@ -1026,12 +1299,182 @@ Stvara se nova kolekcija system.profile i na njoj mozemo izvrsavati upite.
 
    `` db.system.profile.find()``
 
+=== 3.10 Logovi Mongodb
+
+Understand MongoDB log messages
+Now let's take a closer look at the log messages. Each log entry is a JSON object with the following fields:
+
+"t": Records the timestamp of the log message in ISO-8601 format.
+"s": The severity level of the log message.
+"c": Specifies the component this log record belongs to.
+"id": A unique identifier.
+"ctx": Context information.
+"msg": The message body.
+"attr": Include additional information such as client data, file path, line number, etc.
+"tags": Optional tags.
+"truncated": Contains truncation information if the message is truncated.
+"size": The original size of the entry before truncation.
+
+MongoDB provides the following verbosity levels:
+
+"F": Fatal messages.
+"E": Error messages.
+"W": Warning messages.
+"I": Informational messages. Corresponds to numeric value 0.
+"D1"-"D5": Debug messages, Corresponds to numeric value 1-5.
+
+-Logove mozemo lakse citati sa jq toolom
+
+``sudo cat mongod.log | jq``
+
+-U **/etc/logrotate.d/** */ napravimo skriptu(nazovemo je mongodb) za rotiranje logova
+
+[source, bash]
+/home/tonia/DockerMongoRS/log1/mongod.log {
+daily               # jednom dnevno radi rotaciju ako hocemo neko drugo vrijeme osim(daily, weekly, monthly,yearly) pravimo novi cron job
+size 100m           # ili je file veci od 100 MB a provjerava se jednom dnevno
+rotate 7            # cuva maksimalno 7 log fileova   
+missingok           # ako log ne postoji ok je   
+notifempty          # nece praviti novi ako je stari log prazan
+compress            # raditi ce kompresiju loga   
+delaycompress       # nece raditi kompresiju "predzadnjeg loga"   
+create 0644 999 999 # kreira novi log s ovim dozvolama i permisijama
+sharedscripts       # skriptu ce okinuti samo jednom (valja kad ima vise log fileova u jednom folderu
+postrotate          # pocetak skripte
+  docker exec mongors1 mongosh -u admin -p ass --eval 'db.adminCommand({logRotate: 1})' >/dev/null 2>&1  # sadrzaj skripte
+endscript      # kraj skripte
+}
+
+-Pomocu  mozemo forsirati izvodjenje skripte da testiramo:
+
+``sudo logrotate -f /etc/logrotate.d/mongodb``
+
+-Sad ovo uradimo i sa ostala 2 noda
+
 == 4.0 Kubernetes PXC Operator
+
+Da se pridružimo novom clusteru moramo ga dodati u kube config. Skinemo yaml file od clustera i dodamo ga:
+
+``KUBECONFIG=~/.kube/config:/home/tonia/Downloads/ime-clustera.yaml kubectl config view --flatten > ~/.kube/config-merged && mv ~/.kube/config-merged ~/.kube/config``
+
+Na njega se možemo prebaciti pomoću kubectx ili komande:
+
+``kubectl config use-context "ime-clustera"
+
 
 === 4.1 Kubectl deploy
 
+* link:https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html[Tutorial]
+
+* link:https://github.com/percona/percona-xtradb-cluster-operator[Yaml fileovi]
+
+Deploying a Percona XtraDB Cluster 
+
+Added a new cluster to my kubeconfig file using the following commands:
+
+
+``KUBECONFIG=~/.kube/config:/home/tonia/Downloads/staging-ubercluster-rke2.yaml kubectl config view --flatten > ~/.kube/config-merged && mv ~/.kube/config-merged ~/.kube/config``
+
+Then switched to the new cluster's context:
+
+``kubectl config use-context "staging-ubercluster-rke2"``
+
+
+
+Deployed the Percona XtraDB Cluster Operator:
+
+
+``kubectl apply --server-side -f https://raw.githubusercontent.com/percona/percona-xtradb-cluster-operator/refs/heads/main/deploy/operator.yaml -n dba-pxc-test``
+
+
+Deployed the cluster without HAProxy first:
+
+
+``kubectl apply -f pxc-ha.yaml -n dba-pxc-test``
+
+
+Edited pxc-ha.yaml and deployed HAProxy as well:
+
+
+``kubectl apply -f pxc-ha.yaml -n dba-pxc-test``
+
+Get acces to databases:
+
+``kubectl get secret pxc-db-secrets -n dba-pxc-test -o jsonpath='{.data.root}' | base64 --decode``
+
+Tested port forwarding to the cluster:
+
+``kubectl port-forward pxc-db-haproxy-0 3306:3306 -n dba-pxc-test``        * error, use service/nameofservice dont use pod name
+
+This also worked on port 3307.
+
+
+Cleanup and Troubleshooting
+
+Eventually deleted everything by following the provided instructions.
+
+
+PerconaPercona Operator for MySQL - Delete the Operator 
+
+
+Ran into an issue where an old cluster was stuck and couldn't be deleted. I had to manually edit its YAML file and remove the finalizers to force its deletion.
+
+
+``kubectl edit pxc cluster1 -n dba-pxc-test``
+
+
+A similar problem happened with one of the certificates, which kept reappearing.
+
+
+
 === 4.2 Helm deploy
 
+``mkdir KubernetesHelm``
+
+``cd KubernetesHelm``
+
+``helm repo add percona https://percona.github.io/percona-helm-charts/``
+
+``helm repo update``
+
+
+
+``helm pull percona/pxc-operator --version 1.16.1``
+
+``helm pull percona/pxc-db --version 1.16.1``
+
+
+
+edited **values.yaml** for both
+
+
+
+From pxc-operator folder:
+
+``helm install pxc-operator . -n dba-pxc-test``   
+
+(didnt work because cant install crds, jj helped and bring it up)
+
+
+
+From pxc-db folder:
+
+``helm install pxc-db . -n dba-pxc-test``
+
+
+Port forward worked
+
+
+Cleanup again, now with helm:
+
+
+``helm uninstall pxc-db -n dba-pxc-test``
+
+
+``helm uninstall pxc-operator -n dba-pxc-test``
+
+
+and deleted pvcs and secrets with kubectl.
 
 
 
