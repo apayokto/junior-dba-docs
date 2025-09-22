@@ -1425,7 +1425,7 @@ endscript      # kraj skripte
 
 Prvo unesemo veću količinu podataka:
 
-[source,javascript,collapsible]
+[source,javascript,collapsible="Prikaži skriptu"]
 .Kopiraj ovaj kod u `mongosh` konzolu
 ----
 // --- POMOĆNE FUNKCIJE ZA GENERIRANJE SLUČAJNIH PODATAKA ---
@@ -1529,8 +1529,8 @@ if (batch.length > 0) {
 
 Možemo provjeriti stanje s ``db.stats()``
 
-[source,javascript,collapsible]
-.Mongosh izlaz
+[source,javascript,collapsible="Prikaži skriptu"]
+.Kopiraj ovaj kod u `mongosh` konzolu
 ----
 db.stats()
 {
@@ -1557,8 +1557,8 @@ db.stats()
 
 Sada ćemo pobrisati sve korisnije koji imaju manje od 50 godina:
 
-[source,javascript,collapsible]
-.Kod za brisanje
+[source,javascript,collapsible="Prikaži skriptu"]
+.Kopiraj ovaj kod u `mongosh` konzolu
 ----
 // Postavi na kolekciju u kojoj se nalaze podaci
 var coll = db.useri;
@@ -1606,8 +1606,8 @@ I možemo provjeriti koliko ćemo prostora dobiti s compact naredbom:
 
 Onda upotrijebimo:
 
-[source,javascript,collapsible]
-.Compact komanda i izlaz
+[source,javascript,collapsible="Prikaži skriptu"]
+.Kopiraj ovaj kod u `mongosh` konzolu
 ----
 db.runCommand({ compact: 'useri', force: true });
 {
