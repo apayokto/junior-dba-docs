@@ -1423,7 +1423,7 @@ endscript      # kraj skripte
 
 * link:https://www.percona.com/blog/using-compact-in-percona-server-for-mongodb-from-version-4-4/[Compact]
 
-Prvo unesemo veću količinu podata
+Prvo unesemo veću količinu podataka
 
 [source,java]
 ----
