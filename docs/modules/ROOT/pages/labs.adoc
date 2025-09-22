@@ -1425,7 +1425,8 @@ endscript      # kraj skripte
 
 Prvo unesemo veću količinu podataka
 
-[source,java]
+[source,javascript,collapsible="Prikaži skriptu"]
+.Kopiraj ovaj kod u `mongosh` konzolu
 ----
 // --- POMOĆNE FUNKCIJE ZA GENERIRANJE SLUČAJNIH PODATAKA ---
 
@@ -1553,7 +1554,7 @@ db.stats()
       keyId: Long('7552854132097286149')
 ----
 
-Sada ćemo pobrisati sve korisnije koji imaju manje od 50 godina:
+Sada ćemo pobrisati sve korisnike koji imaju manje od 50 godina:
 
 [source,java]
 ----
