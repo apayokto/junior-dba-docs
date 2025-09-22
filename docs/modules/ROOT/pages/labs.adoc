@@ -1595,6 +1595,9 @@ while (true) {
 }
 ----
 
+CAUTION: Pokreni compact uvijek na sekundarnim (secondary) ili skrivenim (hidden) čvorovima, ili na čvorovima s niskim prioritetom. Primarni čvor (Primary) obradi zadnji, nakon što ga prethodno degradiraš (step-down).
+U replica setu, compact naredba mora biti pokrenuta na svakom čvoru.
+
 Kada se podaci pobrišu opet možemo provjeriti ``db.stats()``.
 
 I možemo provjeriti koliko ćemo prostora dobiti s compact naredbom:
@@ -1623,9 +1626,9 @@ db.runCommand({ compact: 'useri', force: true });
 
 Gdje smo oslobodili oko 130MB prostora.
 
-CAUTION: Pokreni compact uvijek na sekundarnim (secondary) ili skrivenim (hidden) čvorovima, ili na čvorovima s niskim prioritetom. Primarni čvor (Primary) obradi zadnji, nakon što ga prethodno degradiraš (step-down).
-U replica setu, compact naredba mora biti pokrenuta na svakom čvoru.
-Ponekad, kada se velika kolekcija komprimira, naredba compact odmah vraća OK, ali u stvarnosti, fizički prostor kolekcije ostaje nepromijenjen. To se događa jer WiredTiger smatra da kolekciju ne treba komprimirati. Da biste to prevladali, trebate ponovno pokretati naredbu compact dok se prostor ne oslobodi.
+
+
+CAUTION: Ponekad, kada se velika kolekcija komprimira, naredba compact odmah vraća OK, ali u stvarnosti, fizički prostor kolekcije ostaje nepromijenjen. To se događa jer WiredTiger smatra da kolekciju ne treba komprimirati. Da biste to prevladali, trebate ponovno pokretati naredbu compact dok se prostor ne oslobodi.
 
 
 
