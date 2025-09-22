@@ -162,11 +162,13 @@ log_replica_updates = ON</code></pre>
 <div class="paragraph">
 <p>I još kreiramo foldere za logove(logmaster i logslave).
 Da bi mysql iz kontenjera mogao u njih pisati i čitati moramo mu dati potrebne dozvole.(chown i chmod)
-Koja grupa je mysql možemo saznati pomoću komande
-<code>docker exec --user mysql &lt;ime_kontejnera&gt; id</code></p>
+Koja grupa je mysql možemo saznati pomoću komande</p>
 </div>
 <div class="paragraph">
-<p>sudo chown -R 1001:1001 master_data</p>
+<p><code>docker exec --user mysql &lt;ime_kontejnera&gt; id</code></p>
+</div>
+<div class="paragraph">
+<p><code>sudo chown -R 1001:1001 master_data</code></p>
 </div>
 <div class="paragraph">
 <p>Zatim kreirajte file <strong>docker-compose.yaml</strong> unutar tog foldera. Dodajte sljedeći sadržaj za definiranje servisa:</p>
@@ -855,6 +857,72 @@ Create Table: CREATE TABLE `arhiva_sbtest5` (
 1 row in set (0.001 sec)</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Možemo ga koristiti i za optimiaziciju tablica, evo jednog primjera:</p>
+</div>
+<div class="paragraph">
+<p>Nakon dugo testiranja jedne tablice, pisanja i brisanja njezina veličina je bila ovakva:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">root@n01:/# dbsize
++--------------------+-----------+
+| Database           | Size (MB) |
++--------------------+-----------+
+| information_schema |      0.20 |
+| mysql              |      3.43 |
+| performance_schema |      0.00 |
+| sbtest             |     66.05 |
+| sys                |      0.03 |
+| vrijeme            |      0.03 |
++--------------------+-----------+
+
+root@n01:/# du -h /var/lib/mysql/
+
+4.0M	/var/lib/mysql/mysql
+4.0K	/var/lib/mysql/performance_schema
+608K	/var/lib/mysql/sys
+168K	/var/lib/mysql/vrijeme
+1.9G	/var/lib/mysql/sbtest
+13G	/var/lib/mysql/
+root@n01:/# dbsize</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pustili smo pt-osc da odradi svoje:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">bash-5.1$ pt-online-schema-change --alter "ENGINE=InnoDB" D=sbtest,t=sbtest1 --host=10.200.0.36 --port=3306 --user=root --password=psici --recursion-method=none --chunk-size=1000 --check-interval=1 --execute</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I poslije vidimo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">root@n01:/# dbsize
++--------------------+-----------+
+| Database           | Size (MB) |
++--------------------+-----------+
+| information_schema |      0.20 |
+| mysql              |      3.43 |
+| performance_schema |      0.00 |
+| sbtest             |     30.06 |
+| sys                |      0.03 |
+| vrijeme            |      0.03 |
++--------------------+-----------+
+
+root@n01:/# du -h /var/lib/mysql/
+
+4.0M	/var/lib/mysql/mysql
+4.0K	/var/lib/mysql/performance_schema
+608K	/var/lib/mysql/sys
+168K	/var/lib/mysql/vrijeme
+41M	/var/lib/mysql/sbtest
+11G	/var/lib/mysql/</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_2_5_indexi_u_mysqlu"><a class="anchor" href="#_2_5_indexi_u_mysqlu"></a>2.5 Indexi u MySQLu</h3>
@@ -1424,7 +1492,7 @@ rs.stepDown(60)  // automatski mu je 60 sekundi ali stavimo svakako</code></pre>
 <p>Sada ce replica izabrati node s _id 2 da bude primarni posto smo njemu dali veci prioritet.</p>
 </div>
 <div class="sect2">
-<h3 id="_3_1_dodavanje_hidden_noda_u_replika_set"><a class="anchor" href="#_3_1_dodavanje_hidden_noda_u_replika_set"></a>3.1 Dodavanje Hidden noda u replika set</h3>
+<h3 id="_4_1_dodavanje_hidden_noda_u_replika_set"><a class="anchor" href="#_4_1_dodavanje_hidden_noda_u_replika_set"></a>4.1 Dodavanje Hidden noda u replika set</h3>
 <div class="paragraph">
 <p>Hidden nam služi da radimo backupe ili analitiku preko njega da ne bi opterećivali ostale nodove.</p>
 </div>
@@ -1462,7 +1530,7 @@ rs.stepDown(60)  // automatski mu je 60 sekundi ali stavimo svakako</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_2_dodavanje_arbiter_noda_u_replika_set"><a class="anchor" href="#_3_2_dodavanje_arbiter_noda_u_replika_set"></a>3.2 Dodavanje Arbiter noda u replika set</h3>
+<h3 id="_4_2_dodavanje_arbiter_noda_u_replika_set"><a class="anchor" href="#_4_2_dodavanje_arbiter_noda_u_replika_set"></a>4.2 Dodavanje Arbiter noda u replika set</h3>
 <div class="paragraph">
 <p>Arbiter nam sluzi u slucaju parnog broja nodova da bude dodatni glas kojim se moze izabrati primarni (najčešći slučaj je 2 noda + arbiter)</p>
 </div>
@@ -1499,7 +1567,7 @@ rs.stepDown(60)  // automatski mu je 60 sekundi ali stavimo svakako</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_3_backup_s_mongodump"><a class="anchor" href="#_3_3_backup_s_mongodump"></a>3.3 Backup s mongodump</h3>
+<h3 id="_4_3_backup_s_mongodump"><a class="anchor" href="#_4_3_backup_s_mongodump"></a>4.3 Backup s mongodump</h3>
 <div class="paragraph">
 <p>Pravimo novi kontenjer 'mongobackup' s istom slikom kao i nodovi na kojima ce raditi backup -&#8594; docker-compose.yaml.</p>
 </div>
@@ -1540,7 +1608,7 @@ rs.stepDown(60)  // automatski mu je 60 sekundi ali stavimo svakako</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_4_restore_s_mongodump"><a class="anchor" href="#_3_4_restore_s_mongodump"></a>3.4 Restore s mongodump</h3>
+<h3 id="_4_4_restore_s_mongodump"><a class="anchor" href="#_4_4_restore_s_mongodump"></a>4.4 Restore s mongodump</h3>
 <div class="paragraph">
 <p>Prvo spustimo sva tri noda posto 'emo raditi "novi replica set"</p>
 </div>
@@ -1607,7 +1675,7 @@ roles: [ { role: "backup", db: "admin" } ,
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_5_restore_pitr"><a class="anchor" href="#_3_5_restore_pitr"></a>3.5 Restore PITR</h3>
+<h3 id="_4_5_restore_pitr"><a class="anchor" href="#_4_5_restore_pitr"></a>4.5 Restore PITR</h3>
 <div class="paragraph">
 <p>Scenario: U bazi smo napravili danas neku novu kolekciju i još nešto radili, i sad slučajno pobrišemo neku staru kolekciju jer je bila sličnog imena.</p>
 </div>
@@ -1665,11 +1733,11 @@ roles: [ { role: "backup", db: "admin" } ,
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_6_skriptirani_backup"><a class="anchor" href="#_3_6_skriptirani_backup"></a>3.6 Skriptirani backup</h3>
+<h3 id="_4_6_skriptirani_backup"><a class="anchor" href="#_4_6_skriptirani_backup"></a>4.6 Skriptirani backup</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_3_7_upgrade_na_novu_verziju_mongodb_instance_u_replika_setu"><a class="anchor" href="#_3_7_upgrade_na_novu_verziju_mongodb_instance_u_replika_setu"></a>3.7 Upgrade na novu verziju mongodb instance u replika setu.</h3>
+<h3 id="_4_7_upgrade_na_novu_verziju_mongodb_instance_u_replika_setu"><a class="anchor" href="#_4_7_upgrade_na_novu_verziju_mongodb_instance_u_replika_setu"></a>4.7 Upgrade na novu verziju mongodb instance u replika setu.</h3>
 <div class="paragraph">
 <p>Pogledamo status replica seta jel sve zdravo.</p>
 </div>
@@ -1746,7 +1814,7 @@ Upoznamo se s novim featursima u novoj verziji pogotovo s compatibilty changes.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_8_indexi_u_mongodb"><a class="anchor" href="#_3_8_indexi_u_mongodb"></a>3.8 Indexi u mongodb</h3>
+<h3 id="_4_8_indexi_u_mongodb"><a class="anchor" href="#_4_8_indexi_u_mongodb"></a>4.8 Indexi u Mongodb</h3>
 <div class="literalblock">
 <div class="content">
 <pre>``db.kolekcija.getIndexes()``  # da vidimo indexe koje ima kolekcija</pre>
@@ -1810,7 +1878,7 @@ Upoznamo se s novim featursima u novoj verziji pogotovo s compatibilty changes.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_9_hvatanje_slow_queria"><a class="anchor" href="#_3_9_hvatanje_slow_queria"></a>3.9 Hvatanje SLOW QUERIA</h3>
+<h3 id="_4_9_hvatanje_slow_queria"><a class="anchor" href="#_4_9_hvatanje_slow_queria"></a>4.9 Hvatanje SLOW QUERIA</h3>
 <div class="literalblock">
 <div class="content">
 <pre>``db.getProfilingStatus()``</pre>
@@ -1840,7 +1908,7 @@ Upoznamo se s novim featursima u novoj verziji pogotovo s compatibilty changes.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_10_logovi_mongodb"><a class="anchor" href="#_3_10_logovi_mongodb"></a>3.10 Logovi Mongodb</h3>
+<h3 id="_4_10_logovi_mongodb"><a class="anchor" href="#_4_10_logovi_mongodb"></a>4.10 Logovi Mongodb</h3>
 <div class="paragraph">
 <p>Understand MongoDB log messages
 Now let&#8217;s take a closer look at the log messages. Each log entry is a JSON object with the following fields:</p>
@@ -1907,7 +1975,237 @@ endscript      # kraj skripte
 </div>
 </div>
 <div class="sect1">
-<h2 id="_4_0_kubernetes_pxc_operator"><a class="anchor" href="#_4_0_kubernetes_pxc_operator"></a>4.0 Kubernetes PXC Operator</h2>
+<h2 id="_4_11_how_to_delete_bunch_of_data_and_reclaim_space_in_mongodb"><a class="anchor" href="#_4_11_how_to_delete_bunch_of_data_and_reclaim_space_in_mongodb"></a>4.11 How to Delete bunch of data and reclaim space in MongoDB</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>link:https://www.percona.com/blog/using-compact-in-percona-server-for-mongodb-from-version-4-4/(Compact)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Prvo unesemo veću količinu podata</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">// --- POMOĆNE FUNKCIJE ZA GENERIRANJE SLUČAJNIH PODATAKA ---
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomFloat(min, max, decimals) {
+    var factor = Math.pow(10, decimals || 2);
+    return Math.round((Math.random() * (max - min) + min) * factor) / factor;
+}
+
+function getRandomDate(startYear, endYear) {
+    var start = new Date(startYear || 1950, 0, 1).getTime();
+    var end = new Date(endYear || 2000, 11, 31).getTime();
+    return new Date(getRandomInt(start, end));
+}
+
+function getRandomString(length) {
+    var chars = 'abcdefghijklmnopqrstuvwxyz';
+    var str = '';
+    for (var i = 0; i &lt; length; i++) {
+        str += chars.charAt(getRandomInt(0, chars.length - 1));
+    }
+    return str;
+}
+
+function getRandomEmail(name) {
+    var domains = ['example.com', 'test.org', 'mail.com', 'sample.net'];
+    return name.toLowerCase() + '@' + domains[getRandomInt(0, domains.length - 1)];
+}
+
+function getRandomTags() {
+    var tagPool = ['new', 'customer', 'vip', 'banned', 'beta', 'internal', 'review'];
+    var tagCount = getRandomInt(1, 4);
+    var tags = [];
+    for (var i = 0; i &lt; tagCount; i++) {
+        tags.push(tagPool[getRandomInt(0, tagPool.length - 1)]);
+    }
+    return tags;
+}
+
+// --- GLAVNA SKRIPTA ZA GENERIRANJE I UNOS PODATAKA ---
+
+// Podesive varijable za unos
+var batchSize = 10000;
+var totalDocuments = 10000000; // Ja sam prekinuo na 4 milijuna
+
+// Inicijalizacija niza za serijski unos i brojača
+var batch = [];
+var count = 0;
+
+// Glavna petlja za generiranje i unos podataka
+for (var i = 1; i &lt;= totalDocuments; i++) {
+    // Stvori novi dokument
+    var name = "name" + i;
+    var birthday = getRandomDate(1950, 2000);
+    var age = new Date().getFullYear() - birthday.getFullYear();
+
+    var doc = {
+        name: name,
+        age: age,
+        birthday: birthday,
+        email: getRandomEmail(name),
+        address: {
+            street: getRandomInt(100, 9999) + ' ' + getRandomString(8) + ' St',
+            city: getRandomString(6),
+            zip: getRandomInt(10000, 99999),
+            country: getRandomString(7)
+        },
+        isActive: Math.random() &lt; 0.5,
+        tags: getRandomTags(),
+        score: getRandomFloat(0, 100, 2),
+        createdAt: new Date(),
+        metadata: {
+            imported: Math.random() &lt; 0.3,
+            source: ['api', 'form', 'manual'][getRandomInt(0, 2)]
+        }
+    };
+
+    // Dodaj dokument u seriju (batch)
+    batch.push(doc);
+
+    // Ako je serija puna, pošalji je bazi i ispiši napredak
+    if (batch.length === batchSize) {
+        db.useri.insertMany(batch);
+        count += batchSize;
+        print("Inserted " + count + " documents...");
+        batch = []; // Resetiraj seriju
+    }
+}
+
+// Ubaci preostale dokumente iz posljednje, nepotpune serije
+if (batch.length &gt; 0) {
+    db.useri.insertMany(batch);
+    count += batch.length;
+    print("Inserted a final batch, total documents: " + count);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Možemo provjeriti stanje s <code>db.stats()</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">db.stats()
+{
+  db: 'test_db',
+  collections: Long('1'),
+  views: Long('0'),
+  objects: Long('5120000'),
+  avgObjSize: 326.171262109375,
+  dataSize: 1669996862,
+  storageSize: 633901056,
+  indexes: Long('1'),
+  indexSize: 142004224,
+  totalSize: 775905280,
+  scaleFactor: Long('1'),
+  fsUsedSize: 8918220800,
+  fsTotalSize: 214736809984,
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1758539352, i: 10000 }),
+    signature: {
+      hash: Binary.createFromBase64('ROkuemj6hprMelfN/uQKg41C9Bg=', 0),
+      keyId: Long('7552854132097286149')</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sada ćemo pobrisati sve korisnije koji imaju manje od 50 godina:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">// Postavi na kolekciju u kojoj se nalaze podaci
+var coll = db.useri;
+
+// Definiraj dobnu granicu
+var ageCutoff = 50;
+var batch = 10000;
+
+while (true) {
+    // Pronađi ID-ove dokumenata čija je dob manja od 50 godina
+    var ids = coll.find(
+        { age: { $lt: ageCutoff } },
+        { _id: 1 }
+    )
+    .limit(batch)
+    .toArray()
+    .map(function (d) { return d._id; });
+
+    // Ako nema više dokumenata za brisanje, prekini petlju
+    if (ids.length === 0) {
+        print("Done. No more documents found.");
+        break;
+    }
+
+    // Obriši pronađene dokumente
+    var res = coll.deleteMany({ _id: { $in: ids } });
+    print("Deleted: " + res.deletedCount + " documents.");
+
+    // Ako je obrisan manji broj od veličine batcha, gotovi smo
+    if (ids.length &lt; batch) {
+        print("Last partial batch. Done.");
+        break;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Kada se podaci pobrišu opet možemo provjeriti <code>db.stats()</code>.</p>
+</div>
+<div class="paragraph">
+<p>I možemo provjeriti koliko ćemo prostora dobiti s compact naredbom:</p>
+</div>
+<div class="paragraph">
+<p><code>db.useri.stats().wiredTiger["block-manager"]["file bytes available for reuse"]</code></p>
+</div>
+<div class="paragraph">
+<p>Onda upotrijebimo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">db.runCommand({ compact: 'useri', force: true });
+{
+  bytesFreed: 129789952,
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1758540622, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('6F/ouZDJi88sWoxJig7Ijs4y/Ik=', 0),
+      keyId: Long('7552854132097286149')
+    }
+  },
+  operationTime: Timestamp({ t: 1758540622, i: 1 })
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gdje smo oslobodili oko 130MB prostora.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Pokreni compact uvijek na sekundarnim (secondary) ili skrivenim (hidden) čvorovima, ili na čvorovima s niskim prioritetom. Primarni čvor (Primary) obradi zadnji, nakon što ga prethodno degradiraš (step-down).
+U replica setu, compact naredba mora biti pokrenuta na svakom čvoru.
+Ponekad, kada se velika kolekcija komprimira, naredba compact odmah vraća OK, ali u stvarnosti, fizički prostor kolekcije ostaje nepromijenjen. To se događa jer WiredTiger smatra da kolekciju ne treba komprimirati. Da biste to prevladali, trebate ponovno pokretati naredbu compact dok se prostor ne oslobodi.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_0_kubernetes_pxc_operator"><a class="anchor" href="#_5_0_kubernetes_pxc_operator"></a>5.0 Kubernetes PXC Operator</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Da se pridružimo novom clusteru moramo ga dodati u kube config. Skinemo yaml file od clustera i dodamo ga:</p>
@@ -1922,7 +2220,7 @@ endscript      # kraj skripte
 <p>``kubectl config use-context "ime-clustera"</p>
 </div>
 <div class="sect2">
-<h3 id="_4_1_kubectl_deploy"><a class="anchor" href="#_4_1_kubectl_deploy"></a>4.1 Kubectl deploy</h3>
+<h3 id="_5_1_kubectl_deploy"><a class="anchor" href="#_5_1_kubectl_deploy"></a>5.1 Kubectl deploy</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1961,7 +2259,7 @@ endscript      # kraj skripte
 <p><code>kubectl apply -f pxc-ha.yaml -n dba-pxc-test</code></p>
 </div>
 <div class="paragraph">
-<p>Edited pxc-ha.yaml and deployed HAProxy as well:</p>
+<p>Edited pxc-ha.ya7ml and deployed HAProxy as well:</p>
 </div>
 <div class="paragraph">
 <p><code>kubectl apply -f pxc-ha.yaml -n dba-pxc-test</code></p>
@@ -2001,7 +2299,7 @@ endscript      # kraj skripte
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_2_helm_deploy"><a class="anchor" href="#_4_2_helm_deploy"></a>4.2 Helm deploy</h3>
+<h3 id="_5_2_helm_deploy"><a class="anchor" href="#_5_2_helm_deploy"></a>5.2 Helm deploy</h3>
 <div class="paragraph">
 <p><code>mkdir KubernetesHelm</code></p>
 </div>

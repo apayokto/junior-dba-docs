@@ -34,9 +34,10 @@ log_replica_updates = ON
 I još kreiramo foldere za logove(logmaster i logslave).
 Da bi mysql iz kontenjera mogao u njih pisati i čitati moramo mu dati potrebne dozvole.(chown i chmod)
 Koja grupa je mysql možemo saznati pomoću komande
+
 ``docker exec --user mysql <ime_kontejnera> id``
 
-sudo chown -R 1001:1001 master_data 
+``sudo chown -R 1001:1001 master_data``
 
 Zatim kreirajte file **docker-compose.yaml** unutar tog foldera. Dodajte sljedeći sadržaj za definiranje servisa:
 
@@ -602,7 +603,74 @@ Create Table: CREATE TABLE `arhiva_sbtest5` (
 1 row in set (0.001 sec)
 ----
 
+Možemo ga koristiti i za optimiaziciju tablica, evo jednog primjera:
+
+Nakon dugo testiranja jedne tablice, pisanja i brisanja njezina veličina je bila ovakva:
+
+[source, mysql]
+----
+root@n01:/# dbsize
++--------------------+-----------+
+| Database           | Size (MB) |
++--------------------+-----------+
+| information_schema |      0.20 |
+| mysql              |      3.43 |
+| performance_schema |      0.00 |
+| sbtest             |     66.05 |
+| sys                |      0.03 |
+| vrijeme            |      0.03 |
++--------------------+-----------+
+
+root@n01:/# du -h /var/lib/mysql/
+
+4.0M	/var/lib/mysql/mysql
+4.0K	/var/lib/mysql/performance_schema
+608K	/var/lib/mysql/sys
+168K	/var/lib/mysql/vrijeme
+1.9G	/var/lib/mysql/sbtest
+13G	/var/lib/mysql/
+root@n01:/# dbsize
+----
+
+Pustili smo pt-osc da odradi svoje:
+
+[source, bash]
+----
+bash-5.1$ pt-online-schema-change --alter "ENGINE=InnoDB" D=sbtest,t=sbtest1 --host=10.200.0.36 --port=3306 --user=root --password=psici --recursion-method=none --chunk-size=1000 --check-interval=1 --execute
+----
+
+I poslije vidimo:
+
+[source, mysql]
+----
+root@n01:/# dbsize
++--------------------+-----------+
+| Database           | Size (MB) |
++--------------------+-----------+
+| information_schema |      0.20 |
+| mysql              |      3.43 |
+| performance_schema |      0.00 |
+| sbtest             |     30.06 |
+| sys                |      0.03 |
+| vrijeme            |      0.03 |
++--------------------+-----------+
+
+root@n01:/# du -h /var/lib/mysql/
+
+4.0M	/var/lib/mysql/mysql
+4.0K	/var/lib/mysql/performance_schema
+608K	/var/lib/mysql/sys
+168K	/var/lib/mysql/vrijeme
+41M	/var/lib/mysql/sbtest
+11G	/var/lib/mysql/
+----
+
+
+
+
 === 2.5 Indexi u MySQLu
+
+
 
 
 
@@ -1040,7 +1108,7 @@ rs.stepDown(60)  // automatski mu je 60 sekundi ali stavimo svakako
 
 Sada ce replica izabrati node s _id 2 da bude primarni posto smo njemu dali veci prioritet.
 
-=== 3.1 Dodavanje Hidden noda u replika set
+=== 4.1 Dodavanje Hidden noda u replika set
 
 
 Hidden nam služi da radimo backupe ili analitiku preko njega da ne bi opterećivali ostale nodove.
@@ -1068,7 +1136,7 @@ Spojimo se na primary instancu i pridružimo ga replika setu:
 
 Provjeriti status, njemu bi trebalo pisati **hidden: true**
 
-=== 3.2 Dodavanje Arbiter noda u replika set
+=== 4.2 Dodavanje Arbiter noda u replika set
 
 Arbiter nam sluzi u slucaju parnog broja nodova da bude dodatni glas kojim se moze izabrati primarni (najčešći slučaj je 2 noda + arbiter)
 
@@ -1092,7 +1160,7 @@ Sada mozemo provjeriti stanje:
  ``rs.status()``
 
 
-=== 3.3 Backup s mongodump
+=== 4.3 Backup s mongodump
 
 Pravimo novi kontenjer 'mongobackup' s istom slikom kao i nodovi na kojima ce raditi backup --> docker-compose.yaml.
 
@@ -1120,7 +1188,7 @@ Na bash liniji u kontenjeru za backup kucamo:
 
 I imamo dump svih baza.
 
-=== 3.4 Restore s mongodump
+=== 4.4 Restore s mongodump
 
 Prvo spustimo sva tri noda posto 'emo raditi "novi replica set" 
 
@@ -1167,7 +1235,7 @@ I dodajemo ih u replika set.
  Sada bi trebali imati sve podatke opet.
 
 
-=== 3.5 Restore PITR
+=== 4.5 Restore PITR
 
 Scenario: U bazi smo napravili danas neku novu kolekciju i još nešto radili, i sad slučajno pobrišemo neku staru kolekciju jer je bila sličnog imena.
 
@@ -1202,10 +1270,10 @@ Onda radimo restore iz oploga:
 
 Trebali bi sada imati vraćenu kolekciju.
 
-=== 3.6 Skriptirani backup
+=== 4.6 Skriptirani backup
 
 
-=== 3.7 Upgrade na novu verziju mongodb instance u replika setu.
+=== 4.7 Upgrade na novu verziju mongodb instance u replika setu.
 
 Pogledamo status replica seta jel sve zdravo.
 
@@ -1246,7 +1314,7 @@ Kad je sve gotovo spojimo se na primary gdje cemo potvrditi da smo sigurni da kr
 
 ``db.adminCommand( { setFeatureCompatibilityVersion: "7.0" } )``
 
-=== 3.8 Indexi u mongodb
+=== 4.8 Indexi u Mongodb
 
     ``db.kolekcija.getIndexes()``  # da vidimo indexe koje ima kolekcija
 
@@ -1282,7 +1350,7 @@ Postoje jos text indexi , geospatial...
 
 Opcije koje mozemo primijeniti na postojece indexe "unique", "sparse", "TTL"...
 
-=== 3.9 Hvatanje SLOW QUERIA
+=== 4.9 Hvatanje SLOW QUERIA
 
 
     ``db.getProfilingStatus()``
@@ -1299,7 +1367,7 @@ Stvara se nova kolekcija system.profile i na njoj mozemo izvrsavati upite.
 
    `` db.system.profile.find()``
 
-=== 3.10 Logovi Mongodb
+=== 4.10 Logovi Mongodb
 
 Understand MongoDB log messages
 Now let's take a closer look at the log messages. Each log entry is a JSON object with the following fields:
@@ -1351,7 +1419,218 @@ endscript      # kraj skripte
 
 -Sad ovo uradimo i sa ostala 2 noda
 
-== 4.0 Kubernetes PXC Operator
+== 4.11 How to Delete bunch of data and reclaim space in MongoDB
+
+* link:https://www.percona.com/blog/using-compact-in-percona-server-for-mongodb-from-version-4-4/(Compact)
+
+Prvo unesemo veću količinu podata
+
+[source, mongodb]
+----
+// --- POMOĆNE FUNKCIJE ZA GENERIRANJE SLUČAJNIH PODATAKA ---
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomFloat(min, max, decimals) {
+    var factor = Math.pow(10, decimals || 2);
+    return Math.round((Math.random() * (max - min) + min) * factor) / factor;
+}
+
+function getRandomDate(startYear, endYear) {
+    var start = new Date(startYear || 1950, 0, 1).getTime();
+    var end = new Date(endYear || 2000, 11, 31).getTime();
+    return new Date(getRandomInt(start, end));
+}
+
+function getRandomString(length) {
+    var chars = 'abcdefghijklmnopqrstuvwxyz';
+    var str = '';
+    for (var i = 0; i < length; i++) {
+        str += chars.charAt(getRandomInt(0, chars.length - 1));
+    }
+    return str;
+}
+
+function getRandomEmail(name) {
+    var domains = ['example.com', 'test.org', 'mail.com', 'sample.net'];
+    return name.toLowerCase() + '@' + domains[getRandomInt(0, domains.length - 1)];
+}
+
+function getRandomTags() {
+    var tagPool = ['new', 'customer', 'vip', 'banned', 'beta', 'internal', 'review'];
+    var tagCount = getRandomInt(1, 4);
+    var tags = [];
+    for (var i = 0; i < tagCount; i++) {
+        tags.push(tagPool[getRandomInt(0, tagPool.length - 1)]);
+    }
+    return tags;
+}
+
+// --- GLAVNA SKRIPTA ZA GENERIRANJE I UNOS PODATAKA ---
+
+// Podesive varijable za unos
+var batchSize = 10000;
+var totalDocuments = 10000000; // Ja sam prekinuo na 4 milijuna
+
+// Inicijalizacija niza za serijski unos i brojača
+var batch = [];
+var count = 0;
+
+// Glavna petlja za generiranje i unos podataka
+for (var i = 1; i <= totalDocuments; i++) {
+    // Stvori novi dokument
+    var name = "name" + i;
+    var birthday = getRandomDate(1950, 2000);
+    var age = new Date().getFullYear() - birthday.getFullYear();
+
+    var doc = {
+        name: name,
+        age: age,
+        birthday: birthday,
+        email: getRandomEmail(name),
+        address: {
+            street: getRandomInt(100, 9999) + ' ' + getRandomString(8) + ' St',
+            city: getRandomString(6),
+            zip: getRandomInt(10000, 99999),
+            country: getRandomString(7)
+        },
+        isActive: Math.random() < 0.5,
+        tags: getRandomTags(),
+        score: getRandomFloat(0, 100, 2),
+        createdAt: new Date(),
+        metadata: {
+            imported: Math.random() < 0.3,
+            source: ['api', 'form', 'manual'][getRandomInt(0, 2)]
+        }
+    };
+
+    // Dodaj dokument u seriju (batch)
+    batch.push(doc);
+
+    // Ako je serija puna, pošalji je bazi i ispiši napredak
+    if (batch.length === batchSize) {
+        db.useri.insertMany(batch);
+        count += batchSize;
+        print("Inserted " + count + " documents...");
+        batch = []; // Resetiraj seriju
+    }
+}
+
+// Ubaci preostale dokumente iz posljednje, nepotpune serije
+if (batch.length > 0) {
+    db.useri.insertMany(batch);
+    count += batch.length;
+    print("Inserted a final batch, total documents: " + count);
+}
+----
+
+Možemo provjeriti stanje s ``db.stats()``
+
+[source, mongodb]
+----
+db.stats()
+{
+  db: 'test_db',
+  collections: Long('1'),
+  views: Long('0'),
+  objects: Long('5120000'),
+  avgObjSize: 326.171262109375,
+  dataSize: 1669996862,
+  storageSize: 633901056,
+  indexes: Long('1'),
+  indexSize: 142004224,
+  totalSize: 775905280,
+  scaleFactor: Long('1'),
+  fsUsedSize: 8918220800,
+  fsTotalSize: 214736809984,
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1758539352, i: 10000 }),
+    signature: {
+      hash: Binary.createFromBase64('ROkuemj6hprMelfN/uQKg41C9Bg=', 0),
+      keyId: Long('7552854132097286149')
+----
+
+Sada ćemo pobrisati sve korisnije koji imaju manje od 50 godina:
+
+[source, mongodb]
+----
+// Postavi na kolekciju u kojoj se nalaze podaci
+var coll = db.useri;
+
+// Definiraj dobnu granicu
+var ageCutoff = 50;
+var batch = 10000;
+
+while (true) {
+    // Pronađi ID-ove dokumenata čija je dob manja od 50 godina
+    var ids = coll.find(
+        { age: { $lt: ageCutoff } },
+        { _id: 1 }
+    )
+    .limit(batch)
+    .toArray()
+    .map(function (d) { return d._id; });
+
+    // Ako nema više dokumenata za brisanje, prekini petlju
+    if (ids.length === 0) {
+        print("Done. No more documents found.");
+        break;
+    }
+
+    // Obriši pronađene dokumente
+    var res = coll.deleteMany({ _id: { $in: ids } });
+    print("Deleted: " + res.deletedCount + " documents.");
+
+    // Ako je obrisan manji broj od veličine batcha, gotovi smo
+    if (ids.length < batch) {
+        print("Last partial batch. Done.");
+        break;
+    }
+}
+----
+
+Kada se podaci pobrišu opet možemo provjeriti ``db.stats()``.
+
+I možemo provjeriti koliko ćemo prostora dobiti s compact naredbom:
+
+``db.useri.stats().wiredTiger["block-manager"]["file bytes available for reuse"]``
+
+Onda upotrijebimo:
+
+[source, mongodb]
+----
+db.runCommand({ compact: 'useri', force: true });
+{
+  bytesFreed: 129789952,
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1758540622, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('6F/ouZDJi88sWoxJig7Ijs4y/Ik=', 0),
+      keyId: Long('7552854132097286149')
+    }
+  },
+  operationTime: Timestamp({ t: 1758540622, i: 1 })
+}
+----
+
+Gdje smo oslobodili oko 130MB prostora.
+
+CAUTION: Pokreni compact uvijek na sekundarnim (secondary) ili skrivenim (hidden) čvorovima, ili na čvorovima s niskim prioritetom. Primarni čvor (Primary) obradi zadnji, nakon što ga prethodno degradiraš (step-down).
+U replica setu, compact naredba mora biti pokrenuta na svakom čvoru.
+Ponekad, kada se velika kolekcija komprimira, naredba compact odmah vraća OK, ali u stvarnosti, fizički prostor kolekcije ostaje nepromijenjen. To se događa jer WiredTiger smatra da kolekciju ne treba komprimirati. Da biste to prevladali, trebate ponovno pokretati naredbu compact dok se prostor ne oslobodi.
+
+
+
+
+
+
+
+
+== 5.0 Kubernetes PXC Operator
 
 Da se pridružimo novom clusteru moramo ga dodati u kube config. Skinemo yaml file od clustera i dodamo ga:
 
@@ -1362,7 +1641,7 @@ Na njega se možemo prebaciti pomoću kubectx ili komande:
 ``kubectl config use-context "ime-clustera"
 
 
-=== 4.1 Kubectl deploy
+=== 5.1 Kubectl deploy
 
 * link:https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html[Tutorial]
 
@@ -1393,7 +1672,7 @@ Deployed the cluster without HAProxy first:
 ``kubectl apply -f pxc-ha.yaml -n dba-pxc-test``
 
 
-Edited pxc-ha.yaml and deployed HAProxy as well:
+Edited pxc-ha.ya7ml and deployed HAProxy as well:
 
 
 ``kubectl apply -f pxc-ha.yaml -n dba-pxc-test``
@@ -1427,7 +1706,7 @@ A similar problem happened with one of the certificates, which kept reappearing.
 
 
 
-=== 4.2 Helm deploy
+=== 5.2 Helm deploy
 
 ``mkdir KubernetesHelm``
 

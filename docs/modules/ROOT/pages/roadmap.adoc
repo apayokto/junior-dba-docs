@@ -16,6 +16,8 @@ Imajte na umu: *Službena dokumentacija je najvažniji i najrelevantniji izvor i
 * link:https://www.youtube.com/watch?v=VbEx7B_PTOE&list=PLIhvC56v63IJIujb5cyE13oLuyORZpdkL[Dinamičan pristup: Brzo savladavanje osnova kroz primjere uz pomoć Network Chucka]
 * link:https://www.youtube.com/@LearnLinuxTV[LearnLinuxTV YouTube kanal]
 
+* link:https://learning.oreilly.com/course/getting-started-with/9780137649648/[Kontenjeri u Linuxu]
+
 .Igrica
 * link:https://overthewire.org/wargames/bandit/bandit0.html[Učenje kroz zabavu]
 
