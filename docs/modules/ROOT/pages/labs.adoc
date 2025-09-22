@@ -1426,7 +1426,6 @@ endscript      # kraj skripte
 Prvo unesemo veću količinu podata
 
 [source,java]
-.Kopiraj ovaj kod u `mongosh` konzolu
 ----
 // --- POMOĆNE FUNKCIJE ZA GENERIRANJE SLUČAJNIH PODATAKA ---
 
@@ -1530,7 +1529,6 @@ if (batch.length > 0) {
 Možemo provjeriti stanje s ``db.stats()``
 
 [source,java]
-.Mongosh izlaz
 ----
 db.stats()
 {
@@ -1606,7 +1604,6 @@ I možemo provjeriti koliko ćemo prostora dobiti s compact naredbom:
 Onda upotrijebimo:
 
 [source,mongodb]
-.Compact komanda i izlaz
 ----
 db.runCommand({ compact: 'useri', force: true });
 {
