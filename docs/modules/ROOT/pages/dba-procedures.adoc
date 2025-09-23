@@ -46,11 +46,13 @@ while (true) {
 ----
 
 We can check sizes of data:
+
 ``db.stats()`` 
 
 Check size of space that can be reclaimed:
 
-``db.useri.stats().wiredTiger["block-manager"]["file bytes available for reuse"]``
+``db.collectionname.stats().wiredTiger["block-manager"]["file bytes available for reuse"]``
+
 
 
 [IMPORTANT]
@@ -65,11 +67,14 @@ Check size of space that can be reclaimed:
 
 CAUTION: In MongoDB version 4.4 or newer, compact will only block metadata operations such as dropping a collection, dropping an index, or creating a new index.
 
+
+
 **In a replica set, the compact command must be run on every node.Always run compact on secondary or hidden nodes, or on nodes with a low priority. Process the primary node last, after you have stepped it down.**
 
 [source,mongodb]
 ----
-db.runCommand({ compact: 'useri', force: true });
+db.runCommand({ compact: 'collectionname', force: true });
 ----
+
 
 CAUTION: Sometimes, when a large collection is compacted, the compact command immediately returns OK, but in reality, the physical space of the collection remains unchanged. This is because WiredTiger deems that the collection does not need to be compacted. To overcome this, you need to run the compact command again until it releases the space.

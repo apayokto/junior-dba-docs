@@ -163,14 +163,16 @@ while (true) {
 </div>
 </div>
 <div class="paragraph">
-<p>We can check sizes of data:
-<code>db.stats()</code></p>
+<p>We can check sizes of data:</p>
+</div>
+<div class="paragraph">
+<p><code>db.stats()</code></p>
 </div>
 <div class="paragraph">
 <p>Check size of space that can be reclaimed:</p>
 </div>
 <div class="paragraph">
-<p><code>db.useri.stats().wiredTiger["block-manager"]["file bytes available for reuse"]</code></p>
+<p><code>db.collectionname.stats().wiredTiger["block-manager"]["file bytes available for reuse"]</code></p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -213,7 +215,7 @@ In MongoDB version 4.4 or newer, compact will only block metadata operations suc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">db.runCommand({ compact: 'useri', force: true });</code></pre>
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">db.runCommand({ compact: 'collectionname', force: true });</code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
