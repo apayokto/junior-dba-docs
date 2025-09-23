@@ -66,6 +66,9 @@
   <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="labs.html">Praktične vježbe</a>
   </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="dba-procedures.html">MongoDB</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -1975,7 +1978,7 @@ endscript      # kraj skripte
 </div>
 </div>
 <div class="sect1">
-<h2 id="_4_11_how_to_delete_bunch_of_data_and_reclaim_space_in_mongodb"><a class="anchor" href="#_4_11_how_to_delete_bunch_of_data_and_reclaim_space_in_mongodb"></a>4.11 How to Delete bunch of data and reclaim space in MongoDB</h2>
+<h2 id="_4_11_kako_obrisati_veliku_količinu_podataka_i_osloboditi_prostor_u_mongodb_u"><a class="anchor" href="#_4_11_kako_obrisati_veliku_količinu_podataka_i_osloboditi_prostor_u_mongodb_u"></a>4.11 Kako obrisati veliku količinu podataka i osloboditi prostor u MongoDB-u</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -1985,7 +1988,18 @@ endscript      # kraj skripte
 </ul>
 </div>
 <div class="paragraph">
-<p>Prvo unesemo veću količinu podataka</p>
+<p>To možemo na dva načina:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Opet syncati node</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>2.
+Prvo unesemo veću količinu podataka</p>
 </div>
 <div class="listingblock">
 <div class="title">Kopiraj ovaj kod u <code>mongosh</code> konzolu</div>
@@ -2210,6 +2224,18 @@ U replica setu, compact naredba mora biti pokrenuta na svakom čvoru.
 </td>
 <td class="content">
 Ponekad, kada se velika kolekcija komprimira, naredba compact odmah vraća OK, ali u stvarnosti, fizički prostor kolekcije ostaje nepromijenjen. To se događa jer WiredTiger smatra da kolekciju ne treba komprimirati. Da biste to prevladali, trebate ponovno pokretati naredbu compact dok se prostor ne oslobodi.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+U MongoDB-u, verzija 4.4 ili novijoj, compact će blokirati samo operacije nad metapodacima kao što su brisanje kolekcije, brisanje indeksa ili stvaranje novog indeksa.
 </td>
 </tr>
 </table>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>MongoDB :: Sportradar Nsoft Junior DBA Tutorials</title>
+    <meta name="generator" content="Antora 3.1.12">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="../..">Sportradar Nsoft Junior DBA Tutorials</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="junior-dba-docs" data-version="1.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Junior DBA Dokumentacija</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Uvod u DBA &amp; DevOps</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="roadmap.html">Learning roadmap</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="labs.html">Praktične vježbe</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="dba-procedures.html">MongoDB</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Junior DBA Dokumentacija</span>
+    <span class="version">1.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="index.html">Junior DBA Dokumentacija</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">1.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Junior DBA Dokumentacija</a></li>
+    <li><a href="dba-procedures.html">MongoDB</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///home/tonia/junior-dba-docs/docs/modules/ROOT/pages/dba-procedures.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">MongoDB</h1>
+<div class="sect1">
+<h2 id="_1_0_delete_a_large_amount_of_data_and_free_up_space_in_mongodb"><a class="anchor" href="#_1_0_delete_a_large_amount_of_data_and_free_up_space_in_mongodb"></a>1.0 Delete a large amount of data and free up space in MongoDB.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are two ways to reclaim disk space in Percona Server for MongoDB (PSMDB): run compact on nodes or resync the node.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>CAUTION: This procedure is for MongoDB from version 4.4+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Script for deleting data in batchs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">use dbname</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">var coll   = db.tickets;                // &lt;-- change me
+var cutoff = ISODate("2023-09-28T00:00:00Z");  // delete dt older than this
+var batch  = 10000;                            // tune (e.g., 1000–20000)
+// TIP: speed up the scan (run once, optional)
+// coll.createIndex({ dt: 1 });
+// LOOP
+while (true) {
+  // Grab a batch of _ids to delete (projection avoids loading full docs)
+  var ids = coll.find(
+      { dt: { $lt: cutoff } },
+      { _id: 1 }
+    )
+    .limit(batch)
+    .toArray()
+    .map(function (d) { return d._id; });
+  if (ids.length === 0) {
+    print("Done.");
+    break;
+  }
+  // Delete exactly that batch
+  var res = coll.deleteMany({ _id: { $in: ids } });
+  print("Deleted: " + res.deletedCount);
+  // If we got fewer than a full batch, we're finished
+  if (ids.length &lt; batch) {
+    print("Last partial batch. Done.");
+    break;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can check sizes of data:
+<code>db.stats()</code></p>
+</div>
+<div class="paragraph">
+<p>Check size of space that can be reclaimed:</p>
+</div>
+<div class="paragraph">
+<p><code>db.useri.stats().wiredTiger["block-manager"]["file bytes available for reuse"]</code></p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>The user should have the required privilege to run the compact command.</p>
+</li>
+<li>
+<p>Check if you have enough replication oplog window.</p>
+</li>
+<li>
+<p>In a shard cluster, a compact command need to be run on each node of every shard. Compact cannot be run against the mongos.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+In MongoDB version 4.4 or newer, compact will only block metadata operations such as dropping a collection, dropping an index, or creating a new index.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>In a replica set, the compact command must be run on every node.Always run compact on secondary or hidden nodes, or on nodes with a low priority. Process the primary node last, after you have stepped it down.</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mongodb hljs" data-lang="mongodb">db.runCommand({ compact: 'useri', force: true });</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Sometimes, when a large collection is compacted, the compact command immediately returns OK, but in reality, the physical space of the collection remains unchanged. This is because WiredTiger deems that the collection does not need to be compacted. To overcome this, you need to run the compact command again until it releases the space.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

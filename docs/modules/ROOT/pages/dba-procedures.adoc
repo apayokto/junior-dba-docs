@@ -1,0 +1,75 @@
+= MongoDB
+
+== 1.0 Delete a large amount of data and free up space in MongoDB.
+
+There are two ways to reclaim disk space in Percona Server for MongoDB (PSMDB): run compact on nodes or resync the node.
+
+ CAUTION: This procedure is for MongoDB from version 4.4+
+
+Script for deleting data in batchs:
+
+[source, mongodb]
+----
+use dbname
+----
+
+[source, java]
+----
+var coll   = db.tickets;                // <-- change me
+var cutoff = ISODate("2023-09-28T00:00:00Z");  // delete dt older than this
+var batch  = 10000;                            // tune (e.g., 1000–20000)
+// TIP: speed up the scan (run once, optional)
+// coll.createIndex({ dt: 1 });
+// LOOP
+while (true) {
+  // Grab a batch of _ids to delete (projection avoids loading full docs)
+  var ids = coll.find(
+      { dt: { $lt: cutoff } },
+      { _id: 1 }
+    )
+    .limit(batch)
+    .toArray()
+    .map(function (d) { return d._id; });
+  if (ids.length === 0) {
+    print("Done.");
+    break;
+  }
+  // Delete exactly that batch
+  var res = coll.deleteMany({ _id: { $in: ids } });
+  print("Deleted: " + res.deletedCount);
+  // If we got fewer than a full batch, we're finished
+  if (ids.length < batch) {
+    print("Last partial batch. Done.");
+    break;
+  }
+}
+----
+
+We can check sizes of data:
+``db.stats()`` 
+
+Check size of space that can be reclaimed:
+
+``db.useri.stats().wiredTiger["block-manager"]["file bytes available for reuse"]``
+
+
+[IMPORTANT]
+====
+* The user should have the required privilege to run the compact command.
+
+* Check if you have enough replication oplog window.
+
+* In a shard cluster, a compact command need to be run on each node of every shard. Compact cannot be run against the mongos. 
+====
+
+
+CAUTION: In MongoDB version 4.4 or newer, compact will only block metadata operations such as dropping a collection, dropping an index, or creating a new index.
+
+**In a replica set, the compact command must be run on every node.Always run compact on secondary or hidden nodes, or on nodes with a low priority. Process the primary node last, after you have stepped it down.**
+
+[source,mongodb]
+----
+db.runCommand({ compact: 'useri', force: true });
+----
+
+CAUTION: Sometimes, when a large collection is compacted, the compact command immediately returns OK, but in reality, the physical space of the collection remains unchanged. This is because WiredTiger deems that the collection does not need to be compacted. To overcome this, you need to run the compact command again until it releases the space.

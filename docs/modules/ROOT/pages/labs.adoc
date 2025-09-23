@@ -1419,10 +1419,15 @@ endscript      # kraj skripte
 
 -Sad ovo uradimo i sa ostala 2 noda
 
-== 4.11 How to Delete bunch of data and reclaim space in MongoDB
+== 4.11 Kako obrisati veliku količinu podataka i osloboditi prostor u MongoDB-u
 
 * link:https://www.percona.com/blog/using-compact-in-percona-server-for-mongodb-from-version-4-4/[Compact]
 
+To možemo na dva načina:
+
+1. Opet syncati node 
+
+2.
 Prvo unesemo veću količinu podataka
 
 [source,javascript,collapsible="Prikaži skriptu"]
@@ -1626,6 +1631,8 @@ Gdje smo oslobodili oko 130MB prostora.
 
 
 CAUTION: Ponekad, kada se velika kolekcija komprimira, naredba compact odmah vraća OK, ali u stvarnosti, fizički prostor kolekcije ostaje nepromijenjen. To se događa jer WiredTiger smatra da kolekciju ne treba komprimirati. Da biste to prevladali, trebate ponovno pokretati naredbu compact dok se prostor ne oslobodi.
+
+CAUTION: U MongoDB-u, verzija 4.4 ili novijoj, compact će blokirati samo operacije nad metapodacima kao što su brisanje kolekcije, brisanje indeksa ili stvaranje novog indeksa.
 
 
 
