@@ -78,3 +78,54 @@ db.runCommand({ compact: 'collectionname', force: true });
 
 
 CAUTION: Sometimes, when a large collection is compacted, the compact command immediately returns OK, but in reality, the physical space of the collection remains unchanged. This is because WiredTiger deems that the collection does not need to be compacted. To overcome this, you need to run the compact command again until it releases the space.
+
+TIP: Compact oplog.rs to reclaim disk space.
+Reducing the size of the oplog does not automatically reclaim the disk space allocated to the original oplog size. You must run compact against the oplog.rs collection in the local database to reclaim disk space. There are no benefits to running compact on the oplog.rs collection after increasing the oplog size.
+A replica set member cannot replicate oplog entries when a compact operation is ongoing on oplog.rs because it prevents oplog synchronization. You must schedule compact operations on the oplog during a maintenance window. Oplog replication cannot occur during that time window.
+
+== 2.0 Rename hosts in replica set
+
+
+
+
+= PXC
+
+== 1.0 Changing synchronous node to asynchronous
+
+On target node we type:
+
+[source, mysql]
+----
+SET GLOBAL wsrep_cluster_address='dummy://';
+
+set session wsrep_on=OFF ;
+----
+
+CAUTION: Change server ID if same on master
+
+
+[source, mysql]
+----
+STOP REPLICA;
+CHANGE MASTER TO
+  MASTER_HOST = 'xxxxx',
+  MASTER_PORT = xxxx,
+  MASTER_USER = 'xxxxx',
+  MASTER_PASSWORD = 'xxxxxxxxxxx',
+  MASTER_AUTO_POSITION = 1;
+
+CHANGE MASTER TO
+  MASTER_SSL=1,
+  MASTER_SSL_VERIFY_SERVER_CERT=0,
+  MASTER_SSL_CA = '/etc/ssl/mysql/ca-cert.pem',
+  MASTER_SSL_CERT = '/etc/ssl/mysql/client-cert.pem',
+  MASTER_SSL_KEY = '/etc/ssl/mysql/client-key.pem';
+
+START REPLICA;
+
+SHOW REPLICA STATUS\G
+----
+
+Shutdown
+
+Restart with conf  ``wsrep: "false"``

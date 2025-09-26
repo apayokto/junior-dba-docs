@@ -673,6 +673,10 @@ root@n01:/# du -h /var/lib/mysql/
 
 
 
+=== 2.6 Pretvaranje singletona u galera replika set
+
+
+
 
 
 
@@ -1419,7 +1423,7 @@ endscript      # kraj skripte
 
 -Sad ovo uradimo i sa ostala 2 noda
 
-== 4.11 Kako obrisati veliku količinu podataka i osloboditi prostor u MongoDB-u
+=== 4.11 Kako obrisati veliku količinu podataka i osloboditi prostor u MongoDB-u
 
 * link:https://www.percona.com/blog/using-compact-in-percona-server-for-mongodb-from-version-4-4/[Compact]
 
