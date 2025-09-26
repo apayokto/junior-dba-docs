@@ -67,7 +67,10 @@
     <a class="nav-link" href="labs.html">Praktične vježbe</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="dba-procedures.html">MongoDB</a>
+    <a class="nav-link" href="mongo-procedures.html">MongoDB</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="pxc-procedures.html">PXC</a>
   </li>
 </ul>
   </li>
@@ -100,10 +103,10 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Junior DBA Dokumentacija</a></li>
-    <li><a href="dba-procedures.html">MongoDB</a></li>
+    <li><a href="mongo-procedures.html">MongoDB</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="file:///home/tonia/junior-dba-docs/docs/modules/ROOT/pages/dba-procedures.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="file:///home/tonia/junior-dba-docs/docs/modules/ROOT/pages/mongo-procedures.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -250,62 +253,6 @@ A replica set member cannot replicate oplog entries when a compact operation is 
 <h2 id="_2_0_rename_hosts_in_replica_set"><a class="anchor" href="#_2_0_rename_hosts_in_replica_set"></a>2.0 Rename hosts in replica set</h2>
 <div class="sectionbody">
 
-</div>
-</div>
-<h1 id="_pxc" class="sect0"><a class="anchor" href="#_pxc"></a>PXC</h1>
-<div class="sect1">
-<h2 id="_1_0_changing_synchronous_node_to_asynchronous"><a class="anchor" href="#_1_0_changing_synchronous_node_to_asynchronous"></a>1.0 Changing synchronous node to asynchronous</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>On target node we type:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">SET GLOBAL wsrep_cluster_address='dummy://';
-
-set session wsrep_on=OFF ;</code></pre>
-</div>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-Change server ID if same on master
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">STOP REPLICA;
-CHANGE MASTER TO
-  MASTER_HOST = 'xxxxx',
-  MASTER_PORT = xxxx,
-  MASTER_USER = 'xxxxx',
-  MASTER_PASSWORD = 'xxxxxxxxxxx',
-  MASTER_AUTO_POSITION = 1;
-
-CHANGE MASTER TO
-  MASTER_SSL=1,
-  MASTER_SSL_VERIFY_SERVER_CERT=0,
-  MASTER_SSL_CA = '/etc/ssl/mysql/ca-cert.pem',
-  MASTER_SSL_CERT = '/etc/ssl/mysql/client-cert.pem',
-  MASTER_SSL_KEY = '/etc/ssl/mysql/client-key.pem';
-
-START REPLICA;
-
-SHOW REPLICA STATUS\G</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Shutdown</p>
-</div>
-<div class="paragraph">
-<p>Restart with conf  <code>wsrep: "false"</code></p>
-</div>
 </div>
 </div>
 </article>

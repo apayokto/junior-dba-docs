@@ -1,0 +1,41 @@
+= PXC
+
+== 1.0 Changing synchronous node to asynchronous
+
+On target node we type:
+
+[source, mysql]
+----
+SET GLOBAL wsrep_cluster_address='dummy://';
+
+set session wsrep_on=OFF ;
+----
+
+CAUTION: Change server ID if same on master
+
+
+[source, mysql]
+----
+STOP REPLICA;
+CHANGE MASTER TO
+  MASTER_HOST = 'xxxxx',
+  MASTER_PORT = xxxx,
+  MASTER_USER = 'xxxxx',
+  MASTER_PASSWORD = 'xxxxxxxxxxx',
+  MASTER_AUTO_POSITION = 1;
+
+CHANGE MASTER TO
+  MASTER_SSL=1,
+  MASTER_SSL_VERIFY_SERVER_CERT=0,
+  MASTER_SSL_CA = '/etc/ssl/mysql/ca-cert.pem',
+  MASTER_SSL_CERT = '/etc/ssl/mysql/client-cert.pem',
+  MASTER_SSL_KEY = '/etc/ssl/mysql/client-key.pem';
+
+START REPLICA;
+
+SHOW REPLICA STATUS\G
+----
+
+Shutdown
+
+Restart with conf  ``wsrep: "false"``

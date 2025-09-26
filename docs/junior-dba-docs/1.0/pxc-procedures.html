@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Uvod u DBA &amp; DevOps :: Sportradar Nsoft Junior DBA Tutorials</title>
+    <title>PXC :: Sportradar Nsoft Junior DBA Tutorials</title>
     <meta name="generator" content="Antora 3.1.12">
     <link rel="stylesheet" href="../../_/css/site.css">
   </head>
@@ -57,7 +57,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="index.html">Uvod u DBA &amp; DevOps</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -69,7 +69,7 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="mongo-procedures.html">MongoDB</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="pxc-procedures.html">PXC</a>
   </li>
 </ul>
@@ -99,40 +99,73 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="index.html" class="home-link is-current"></a>
+  <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Junior DBA Dokumentacija</a></li>
-    <li><a href="index.html">Uvod u DBA &amp; DevOps</a></li>
+    <li><a href="pxc-procedures.html">PXC</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="file:///home/tonia/junior-dba-docs/docs/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="file:///home/tonia/junior-dba-docs/docs/modules/ROOT/pages/pxc-procedures.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Uvod u DBA &amp; DevOps</h1>
-<div id="preamble">
+<h1 class="page">PXC</h1>
+<div class="sect1">
+<h2 id="_1_0_changing_synchronous_node_to_asynchronous"><a class="anchor" href="#_1_0_changing_synchronous_node_to_asynchronous"></a>1.0 Changing synchronous node to asynchronous</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Ovo je moj osobni vodič kroz alate, procese i koncepte koje sam savladao kao Junior DBA.</p>
+<p>On target node we type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">SET GLOBAL wsrep_cluster_address='dummy://';
+
+set session wsrep_on=OFF ;</code></pre>
 </div>
 </div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Change server ID if same on master
+</td>
+</tr>
+</table>
 </div>
-<div class="sect1">
-<h2 id="_sadržaj"><a class="anchor" href="#_sadržaj"></a>Sadržaj</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="roadmap.html" class="xref page">Learning roadmap</a></p>
-</li>
-<li>
-<p><a href="labs.html" class="xref page">Praktične vježbe</a></p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-mysql hljs" data-lang="mysql">STOP REPLICA;
+CHANGE MASTER TO
+  MASTER_HOST = 'xxxxx',
+  MASTER_PORT = xxxx,
+  MASTER_USER = 'xxxxx',
+  MASTER_PASSWORD = 'xxxxxxxxxxx',
+  MASTER_AUTO_POSITION = 1;
+
+CHANGE MASTER TO
+  MASTER_SSL=1,
+  MASTER_SSL_VERIFY_SERVER_CERT=0,
+  MASTER_SSL_CA = '/etc/ssl/mysql/ca-cert.pem',
+  MASTER_SSL_CERT = '/etc/ssl/mysql/client-cert.pem',
+  MASTER_SSL_KEY = '/etc/ssl/mysql/client-key.pem';
+
+START REPLICA;
+
+SHOW REPLICA STATUS\G</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Shutdown</p>
+</div>
+<div class="paragraph">
+<p>Restart with conf  <code>wsrep: "false"</code></p>
 </div>
 </div>
 </div>

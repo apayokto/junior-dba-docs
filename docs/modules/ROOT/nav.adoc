@@ -1,4 +1,5 @@
 * xref:index.adoc[]
 * xref:roadmap.adoc[]
 * xref:labs.adoc[]
-* xref:dba-procedures.adoc[]
+* xref:mongo-procedures.adoc[]
+* xref:pxc-procedures.adoc[]
